@@ -1,11 +1,11 @@
-import React from 'react';
-import { useQuery } from 'wasp/client/operations';
-import { getChallenges } from 'wasp/client/operations';
-import ChallengeForm from './components/ChallengeForm';
-import ChallengeList from './components/ChallengeList';
+import React from "react";
+import { useQuery } from "wasp/client/operations";
+import { getLoops } from "wasp/client/operations";
+import LoopForm from "./components/LoopForm";
+import LoopList from "./components/LoopList";
 
 const HomePage = () => {
-  const { data: challenges, isLoading, error } = useQuery(getChallenges);
+  const { data: loops, isLoading, error } = useQuery(getLoops);
 
   if (isLoading) return "Loading...";
   if (error) return "Error: " + error;
@@ -13,10 +13,10 @@ const HomePage = () => {
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">
-        MkaeLoop - Commit to Create. Dare to Deliver.
+        MkaeLoop - Dare together. Deliver accountable.
       </h1>
-      <ChallengeForm />
-      <ChallengeList challenges={challenges} />
+      <LoopForm />
+      <LoopList loops={loops} />
     </div>
   );
 };

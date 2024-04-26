@@ -6,15 +6,16 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Challenge" (
+CREATE TABLE "Loop" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "projectType" TEXT NOT NULL,
-    "timeframe" TEXT NOT NULL,
+    "startDate" DATETIME NOT NULL,
+    "numIterations" INTEGER NOT NULL,
+    "frequency" TEXT NOT NULL,
     "isActive" BOOLEAN NOT NULL,
-    "challengeName" TEXT NOT NULL,
-    "userId" INTEGER,
-    "userName" TEXT,
-    CONSTRAINT "Challenge_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    "name" TEXT,
+    "userId" INTEGER NOT NULL,
+    CONSTRAINT "Loop_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -43,6 +44,14 @@ CREATE TABLE "Session" (
     CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "Auth" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+-- CreateTable
+CREATE TABLE "_SubscribedLoop" (
+    "A" INTEGER NOT NULL,
+    "B" INTEGER NOT NULL,
+    CONSTRAINT "_SubscribedLoop_A_fkey" FOREIGN KEY ("A") REFERENCES "Loop" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "_SubscribedLoop_B_fkey" FOREIGN KEY ("B") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Auth_userId_key" ON "Auth"("userId");
 
@@ -51,3 +60,9 @@ CREATE UNIQUE INDEX "Session_id_key" ON "Session"("id");
 
 -- CreateIndex
 CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "_SubscribedLoop_AB_unique" ON "_SubscribedLoop"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_SubscribedLoop_B_index" ON "_SubscribedLoop"("B");
