@@ -30,30 +30,69 @@ page SignupPage {
   component: import Signup from "@src/pages/auth/Signup.jsx"
 }
 entity User {=psl
-    id              Int     @id @default(autoincrement())
-    firstName       String?
-    lastName        String?
-    loops           Loop[]
-    subscribedLoops Loop[]  @relation("SubscribedLoop")
+  id            Int      @id @default(autoincrement())
+  loops         Loop[]   @relation("UserLoops")
+  checkins      Checkin[]
 psl=}
 
+//TODO: subscribe to loops
 entity Loop {=psl
-    id          Int    @id @default(autoincrement())
-    projectType String
-    startDate   DateTime
-    numIterations Int
-    frequency   String
-    isActive    Boolean
-    name        String?
-    subscribers User[] @relation("SubscribedLoop")
-    userId      Int
-    createdBy   User  @relation(fields: [userId], references: [id])
+  id            Int        @id @default(autoincrement())
+  name          String
+  projectType   String
+  numIterations Int
+  frequency     String     // e.g., "daily", "weekly", "monthly"
+  isActive      Boolean    @default(true)
+  createdById   Int
+  createdBy     User       @relation("UserLoops", fields: [createdById], references: [id])
+  iterations    Iteration[]
 psl=}
 
+entity Iteration {=psl
+  id          Int      @id @default(autoincrement())
+  loopId      Int
+  loop        Loop     @relation(fields: [loopId], references: [id])
+  startTime   DateTime
+  endTime     DateTime
+  checkins    Checkin[]
+  completed   Boolean  @default(false)
+psl=}
+
+entity Checkin {=psl
+  id          Int       @id @default(autoincrement())
+  iterationId Int
+  iteration   Iteration @relation(fields: [iterationId], references: [id])
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  createdAt   DateTime  @default(now())
+  proofOfWork String
+psl=}
 
 action createLoop {
   fn: import { createLoop } from "@src/actions.js",
   entities: [Loop, User]
+}
+action createIteration {
+  fn: import { createIteration } from "@src/actions.js",
+  entities: [Iteration, Loop]
+}
+
+action createCheckin {
+  fn: import { createCheckin } from "@src/actions.js",
+  entities: [Checkin, Iteration, User]
+}
+action createIterations {
+  fn: import { createIterations } from "@src/actions.js",
+  entities: [Iteration, Loop]
+}
+
+action deleteLoop {
+  fn: import { deleteLoop } from "@src/actions.js",
+  entities: [Loop, Iteration]
+}
+
+action requireSignIn {
+  fn: import { requireSignIn } from "@src/actions.js"
 }
 
 query getLoops {

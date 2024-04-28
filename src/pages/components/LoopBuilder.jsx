@@ -19,9 +19,9 @@ const FrequencySelect = ({ value, onChange }) => (
     onChange={onChange}
   >
     <option value="">⏱️ How long?</option>
-    <option value="Days">⏳ Days</option>
-    <option value="Weeks">🗓️ Weeks</option>
-    <option value="Months">📆 Months</option>
+    <option value="daily">⏳ Days</option>
+    <option value="weekly">🗓️ Weeks</option>
+    <option value="monthly">📆 Months</option>
   </select>
 );
 
