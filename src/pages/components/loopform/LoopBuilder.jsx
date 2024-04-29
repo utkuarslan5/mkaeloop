@@ -1,47 +1,3 @@
-const ProjectTypeSelect = ({ value, onChange }) => (
-  <select
-    className="border rounded px-2 py-1"
-    value={value}
-    onChange={onChange}
-  >
-    <option value="">🤔 What?</option>
-    <option value="App">📱 App</option>
-    <option value="Design">🎨 Design</option>
-    <option value="Song">🎵 Song</option>
-    <option value="Writing">✍️ Writing</option>
-  </select>
-);
-
-const FrequencySelect = ({ value, onChange }) => (
-  <select
-    className="border rounded px-2 py-1"
-    value={value}
-    onChange={onChange}
-  >
-    <option value="">⏱️ How long?</option>
-    <option value="daily">⏳ Days</option>
-    <option value="weekly">🗓️ Weeks</option>
-    <option value="monthly">📆 Months</option>
-  </select>
-);
-
-const IterationsInput = ({ value, onChange }) => (
-  <input
-    type="number"
-    min="1"
-    placeholder="X"
-    className="border rounded px-1 py-1 w-16"
-    value={value || ""}
-    onChange={(e) => onChange(parseInt(e.target.value, 10))}
-  />
-);
-
-const IterationsOutput = ({ iterations }) => (
-  <div className="flex gap-2">
-    { iterations }
-  </div>
-);
-
 const LoopBuilder = ({
   projectType,
   frequency,
@@ -68,5 +24,51 @@ const LoopBuilder = ({
     </div>
   </div>
 );
+
+const ProjectTypeSelect = ({ value, onChange }) => (
+  <select
+    className="border rounded px-2 py-1"
+    value={value}
+    onChange={onChange}
+  >
+    <option value="">🤔 What?</option>
+    <option value="App">📱 App</option>
+    <option value="Design">🎨 Design</option>
+    <option value="Song">🎵 Song</option>
+    <option value="Writing">✍️ Writing</option>
+  </select>
+);
+
+const FrequencySelect = ({ value, onChange }) => (
+  <select
+    className="border rounded px-2 py-1"
+    value={value}
+    onChange={onChange}
+  >
+    <option value="">⏱️ How long?</option>
+    <option value="daily">🌞 Days</option>
+    <option value="weekly">🗓️ Weeks</option>
+    <option value="monthly">📆 Months</option>
+  </select>
+);
+
+const IterationsInput = ({ value, onChange }) => (
+  <input
+    type="number"
+    min="1"
+    placeholder="X"
+    className="border rounded px-1 py-1 w-16"
+    value={value || ""}
+    onChange={(e) => onChange(parseInt(e.target.value, 10))}
+  />
+);
+
+const IterationsOutput = ({ iterations }) => (
+  <div className="flex gap-2">
+    { iterations }
+  </div>
+);
+
+
 
 export default LoopBuilder;

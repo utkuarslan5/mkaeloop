@@ -159,6 +159,10 @@ export const deleteLoop = async (args, context) => {
       throw new Error(`Loop with id ${args.id} not found`);
     }
 
+    if (loopToDelete.createdBy !== context.user.id) {
+      throw new Error("You can only delete loops that you created.");
+    }
+
     await context.entities.Iteration.deleteMany({
       where: { loopId: args.id },
     });
@@ -174,8 +178,3 @@ export const deleteLoop = async (args, context) => {
   }
 };
 
-export const requireSignIn = async (args, context) => {
-  if (!context.user) {
-    throw new HttpError(401, "You must be signed in to perform this action.");
-  }
-};

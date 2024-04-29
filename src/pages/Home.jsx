@@ -8,7 +8,7 @@ const HomePage = () => {
   return (
     <div className="p-4">
       <h1 className="text-3xl font-bold mb-4">
-        MkaeLoop - Dare together. Deliver accountable.
+        MkaeLoop - Show, then Tell.
       </h1>
       <LoopForm />
       <LoopList/>

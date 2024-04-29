@@ -88,12 +88,9 @@ action createIterations {
 
 action deleteLoop {
   fn: import { deleteLoop } from "@src/actions.js",
-  entities: [Loop, Iteration]
+  entities: [Loop, Iteration, User]
 }
 
-action requireSignIn {
-  fn: import { requireSignIn } from "@src/actions.js"
-}
 query getLoops {
   fn: import { getLoops } from "@src/queries.js",
   entities: [Loop]

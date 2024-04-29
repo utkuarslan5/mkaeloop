@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAction } from "wasp/client/operations";
 import { createLoop, createIterations } from "wasp/client/operations";
-import LoopBuilder from "./LoopBuilder";
+import LoopBuilder from "./loopform/LoopBuilder";
 import { useAuth } from "wasp/client/auth";
 import LoginPopUp from "../auth/LoginPopUp";
+import LoopMessage from "./loopform/LoopMessage";
+import AcceptLoopButton from "./loopform/AcceptLoopButton";
 
 const LoopForm = () => {
   const { data: user } = useAuth();
@@ -54,7 +56,6 @@ const LoopForm = () => {
 
       const loop = await createLoopFn(args);
       const updatedLoop = await createIterationsFn({ loop });
-      console.log("Final updated loop:", updatedLoop);
       setProjectType("");
       setFrequency("");
       setIterations(1);
@@ -85,43 +86,5 @@ const LoopForm = () => {
     </div>
   );
 };
-
-const LoopMessage = ({ projectType, frequency, iterations }) => (
-  <div className="bg-blue-100 p-4 rounded mb-4">
-    <p className="text-xl mb-2">
-      Your Mission, Should You Choose to Accept It:
-    </p>
-    <h2 className="text-2xl font-bold">
-      Create {iterations}{" "}
-      {projectType === "App"
-        ? " App📱"
-        : projectType === "Design"
-        ? " Design🎨"
-        : projectType === "Song"
-        ? " Song🎵"
-        : projectType === "Writing"
-        ? "✍️ Writing"
-        : " What?🤔"}{" "}
-      in {iterations}{" "}
-      {frequency === "daily"
-        ? "Days ⏳"
-        : frequency === "weekly"
-        ? " Weeks 🗓"
-        : frequency === "monthly"
-        ? "Months 📆"
-        : "How long? ⏱️"}
-      .
-    </h2>
-  </div>
-);
-
-const AcceptLoopButton = ({ onClick }) => (
-  <button
-    onClick={onClick}
-    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-  >
-    I Accept the Loop
-  </button>
-);
 
 export default LoopForm;
