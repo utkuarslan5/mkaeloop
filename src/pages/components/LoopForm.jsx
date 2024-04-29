@@ -32,7 +32,7 @@ const LoopForm = () => {
     }
   }, [user]);
 
-  const handleAcceptLoop = () => {
+  const handleAcceptLoop = async () => {
     localStorage.setItem("projectType", projectType);
     localStorage.setItem("frequency", frequency);
     localStorage.setItem("iterations", iterations);
@@ -51,11 +51,10 @@ const LoopForm = () => {
         isActive: true,
         createdById: user.id,
       };
-      
 
-      const loopResult = createLoopFn(args).then(loop => {
-        createIterationsFn({ loop });
-      });
+      const loop = await createLoopFn(args);
+      const updatedLoop = await createIterationsFn({ loop });
+      console.log("Final updated loop:", updatedLoop);
       setProjectType("");
       setFrequency("");
       setIterations(1);

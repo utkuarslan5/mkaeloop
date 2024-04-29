@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { useQuery } from "wasp/client/operations";
-import { getLoops, deleteLoop } from "wasp/client/operations";
+import {
+  getLoops,
+  deleteLoop,
+  getLoopById,
+  getIterationsByLoopId,
+} from "wasp/client/operations";
 
 const LoopList = () => {
   const { data: loops, error, isLoading, refetch } = useQuery(getLoops);
-  
+
   const handleDelete = async (loopId) => {
     try {
       await deleteLoop({ id: loopId });
@@ -33,6 +38,35 @@ const LoopList = () => {
 
 const LoopItem = ({ loop, onDelete }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const {
+    data: loopData,
+    error: loopError,
+    isLoading: isLoopLoading,
+  } = useQuery(getLoopById, { id: loop.id });
+  const {
+    data: iterationsData,
+    error: iterationsError,
+    isLoading: isIterationsLoading,
+  } = useQuery(getIterationsByLoopId, { loopId: loop.id });
+
+  if (isLoopLoading || isIterationsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (loopError || iterationsError) {
+    return <div>Error: {loopError?.message || iterationsError?.message}</div>;
+  }
+
+  const currentIteration = iterationsData.find(
+    (iteration) =>
+      !iteration.completed &&
+      iteration.startTime <= new Date() &&
+      iteration.endTime >= new Date()
+  );
+  const remainingTime =
+    currentIteration && currentIteration.endTime
+      ? Math.max(0, currentIteration.endTime.getTime() - new Date().getTime())
+      : undefined;
 
   return (
     <div
@@ -49,35 +83,44 @@ const LoopItem = ({ loop, onDelete }) => {
         </button>
       )}
       <div>
-        {loop.name ||
-          `${loop.projectType} loop for ${loop.numIterations} projects`}
+        {loopData.name ||
+          `${loopData.projectType} loop for ${loopData.numIterations} projects`}
       </div>
       <div>
-        {Array.from({ length: loop.numIterations }, (_, i) => (
-          <span key={i}>{i < loop.completedIterations ? "⭐" : "☆"}</span>
+        {Array.from({ length: loopData.numIterations }, (_, i) => (
+          <span key={i}>{i < loopData.completedIterations ? "⭐" : "☆"}</span>
         ))}
       </div>
       <div>
-        {loop.numIterations}{" "}
-        {loop.projectType === "app"
+        {loopData.numIterations}{" "}
+        {loopData.projectType === "app"
           ? "App📱"
-          : loop.projectType === "design"
+          : loopData.projectType === "design"
           ? "Design🎨"
-          : loop.projectType === "song"
+          : loopData.projectType === "song"
           ? "Song🎵"
-          : loop.projectType === "writing"
+          : loopData.projectType === "writing"
           ? "✍️ Writing"
           : "What?🤔"}{" "}
-        in {loop.numIterations}{" "}
-        {loop.frequency === "daily"
+        in {loopData.numIterations}{" "}
+        {loopData.frequency === "daily"
           ? "Days �"
-          : loop.frequency === "weekly"
+          : loopData.frequency === "weekly"
           ? "Weeks 📆"
-          : loop.frequency === "monthly"
+          : loopData.frequency === "monthly"
           ? "Months 🗓"
           : "How often? ⏱️"}{" "}
       </div>
-      <div>Remaining time: {/* Add timer component here */}</div>
+      <div>
+        Remaining time:{" "}
+        {remainingTime !== undefined
+          ? `${Math.floor(
+              remainingTime / (1000 * 60 * 60 * 24)
+            )} days, ${Math.floor(
+              (remainingTime / (1000 * 60 * 60)) % 24
+            )} hours, ${Math.floor((remainingTime / (1000 * 60)) % 60)} minutes`
+          : "No incomplete iteration"}
+      </div>
     </div>
   );
 };

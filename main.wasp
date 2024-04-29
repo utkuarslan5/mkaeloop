@@ -94,7 +94,6 @@ action deleteLoop {
 action requireSignIn {
   fn: import { requireSignIn } from "@src/actions.js"
 }
-
 query getLoops {
   fn: import { getLoops } from "@src/queries.js",
   entities: [Loop]
@@ -104,6 +103,23 @@ query getUser {
   fn: import { getUser } from "@src/queries.js",
   entities: [User]
 }
+
+query getLoopById {
+  fn: import { getLoopById } from "@src/queries.js",
+  entities: [Loop]
+}
+
+query getIterationsByLoopId {
+  fn: import { getIterationsByLoopId } from "@src/queries.js",
+  entities: [Iteration]
+}
+
+query getCheckinsByIterationId {
+  fn: import { getCheckinsByIterationId } from "@src/queries.js",
+  entities: [Checkin, User]
+}
+
+
 
 route HomeRoute { path: "/", to: HomePage }
 page HomePage {

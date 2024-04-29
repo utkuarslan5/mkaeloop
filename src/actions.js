@@ -78,16 +78,28 @@ export const createIterations = async (args, context) => {
     iterations.push(iteration);
   }
 
-  await context.entities.Loop.update({
-    where: { id: loop.id },
-    data: {
-      iterations: {
-        connect: iterations.map((iteration) => ({ id: iteration.id })),
+  try {
+    await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: {
+        iterations: {
+          connect: iterations.map((iteration) => ({ id: iteration.id })),
+        },
       },
-    },
-  });
+    });
 
-  console.log("Iterations connected to the loop successfully.");
+    const updatedLoop = await context.entities.Loop.findUnique({
+      where: { id: loop.id },
+      include: { iterations: true },
+    });
+
+    // console.log("Updated loop with iterations:", updatedLoop);
+    console.log("Iterations connected to the loop successfully.");
+    return updatedLoop;
+  } catch (error) {
+    console.error("Error updating loop with iterations:", error);
+    throw error;
+  }
 };
 
 export const createIteration = async (args, context) => {
