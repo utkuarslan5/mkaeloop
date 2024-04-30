@@ -4,9 +4,9 @@ import { getLoopById, getIterationsByLoopId } from "wasp/client/operations";
 import IterationProgress from "./IterationProgress";
 import LoopDetails from "./LoopDetails";
 import RemainingTime from "./RemainingTime";
-import { getCurrentIteration, getRemainingTime } from "../../utils";
+import { getCurrentIteration, getRemainingTime } from "./utils";
 
-const LoopItem = ({ loop, onDelete, user }) => {
+const LoopItem = ({ loop, onRemove, user }) => {
   const [isHovered, setIsHovered] = useState(false);
   const {
     data: loopData,
@@ -18,8 +18,6 @@ const LoopItem = ({ loop, onDelete, user }) => {
     error: iterationsError,
     isLoading: isIterationsLoading,
   } = useQuery(getIterationsByLoopId, { loopId: loop.id });
-
-  console.log(loop);
 
   if (isLoopLoading || isIterationsLoading) {
     return <div>Waiting for the loops to jump through the hoops... 🐰🔄</div>;
@@ -36,30 +34,8 @@ const LoopItem = ({ loop, onDelete, user }) => {
 
   const currentIteration = getCurrentIteration(iterationsData);
   const remainingTime = getRemainingTime(currentIteration);
+  const isCreator = user && loop.createdById === user.id;
 
-  return (
-    <LoopItemContent
-      loop={loopData}
-      isHovered={isHovered}
-      setIsHovered={setIsHovered}
-      onDelete={() => onDelete(loop.id, user)}
-      currentIteration={currentIteration}
-      remainingTime={remainingTime}
-      user={user}
-    />
-  );
-};
-
-// @TODO: check here ids dont match
-const LoopItemContent = ({
-  loop,
-  isHovered,
-  setIsHovered,
-  onDelete,
-  currentIteration,
-  remainingTime,
-  user,
-}) => {
   return (
     <div
       className="bg-gray-100 p-4 rounded-lg relative"
@@ -68,15 +44,19 @@ const LoopItemContent = ({
     >
       {isHovered && user && (
         <div className="absolute top-2 right-2 flex">
-          <button
-            className="bg-red-500 text-white px-1 py-1 rounded mr-1"
-            onClick={() => onDelete(loop.id, user)}
-          >
-            Delete 
-          </button>
-          <button className="bg-green-500 text-white px-1 py-1 rounded">
-            Join
-          </button>
+          {isCreator && (
+            <button
+              className="bg-red-500 text-white px-1 py-1 rounded mr-1"
+              onClick={() => onRemove(loop, user)}
+            >
+              Remove
+            </button>
+          )}
+          {!isCreator && (
+            <button className="bg-green-500 text-white px-1 py-1 rounded">
+              Join
+            </button>
+          )}
         </div>
       )}
       <div>

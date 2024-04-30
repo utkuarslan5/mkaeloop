@@ -10,7 +10,7 @@ export const createLoop = async (args, context) => {
         numIterations: args.numIterations,
         frequency: args.frequency,
         isActive: true,
-        createdById: context.user.id,
+        createdById: args.createdById,
       },
     });
 
@@ -150,25 +150,26 @@ export const createCheckin = async (args, context) => {
 
 export const deleteLoop = async (args, context) => {
   try {
+    const { loop, user } = args;
     const loopToDelete = await context.entities.Loop.findUnique({
-      where: { id: args.id },
+      where: { id: loop.id },
       include: { iterations: true },
     });
 
     if (!loopToDelete) {
-      throw new Error(`Loop with id ${args.id} not found`);
+      throw new Error(`Loop with id ${loop.id} not found`);
     }
 
-    if (loopToDelete.createdBy !== context.user.id) {
+    if (loopToDelete.createdById !== user.id) {
       throw new Error("You can only delete loops that you created.");
     }
 
     await context.entities.Iteration.deleteMany({
-      where: { loopId: args.id },
+      where: { loopId: loop.id },
     });
 
     const deletedLoop = await context.entities.Loop.delete({
-      where: { id: args.id },
+      where: { id: loop.id },
     });
 
     return deletedLoop;
@@ -178,3 +179,29 @@ export const deleteLoop = async (args, context) => {
   }
 };
 
+export const deactivateLoop = async (args, context) => {
+  try {
+    const { loop, user } = args;
+    const loopToDeactivate = await context.entities.Loop.findUnique({
+      where: { id: loop.id },
+    });
+
+    if (!loopToDeactivate) {
+      throw new Error(`Loop with id ${loop.id} not found`);
+    }
+
+    if (loopToDeactivate.createdById !== user.id) {
+      throw new Error("You can only deactivate loops that you created.");
+    }
+
+    const deactivatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: { isActive: false },
+    });
+
+    return deactivatedLoop;
+  } catch (error) {
+    console.error("Error deactivating loop:", error);
+    throw error;
+  }
+};

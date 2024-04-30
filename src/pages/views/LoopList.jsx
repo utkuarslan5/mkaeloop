@@ -1,19 +1,32 @@
 import React, { useState } from "react";
 import { useQuery } from "wasp/client/operations";
-import { getLoops, deleteLoop } from "wasp/client/operations";
-import LoopItem from "./looplist/LoopItem";
+import {
+  getActiveLoops,
+  deleteLoop,
+  deactivateLoop,
+} from "wasp/client/operations";
+import LoopItem from "../components/looplist/LoopItem";
 import { useAuth } from "wasp/client/auth";
 
 const LoopList = () => {
-  const { data: loops, error, isLoading, refetch } = useQuery(getLoops);
+  const { data: loops, error, isLoading, refetch } = useQuery(getActiveLoops);
   const { data: user } = useAuth();
 
-  const handleDelete = async (loopId) => {
+  const handleDelete = async (loop, user) => {
     try {
-      await deleteLoop({ id: loopId });
+      const deletedLoop = await deleteLoop({ loop, user });
       refetch();
     } catch (error) {
       console.error("Error deleting loop:", error);
+    }
+  };
+
+  const handleDeactivate = async (loop, user) => {
+    try {
+      const deactivatedLoop = await deactivateLoop({ loop, user });
+      refetch();
+    } catch (error) {
+      console.error("Error deactivating loop:", error);
     }
   };
 
@@ -33,7 +46,7 @@ const LoopList = () => {
           <LoopItem
             key={loop.id}
             loop={loop}
-            onDelete={handleDelete}
+            onRemove={handleDeactivate}
             user={user}
           />
         ))}

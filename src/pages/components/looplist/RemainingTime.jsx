@@ -6,17 +6,15 @@ const RemainingTime = ({ remainingTime }) => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimeLeft((prevTime) => prevTime - 1000);
+      setTimeLeft((prevTime) => {
+        const newTime = prevTime - 1000;
+        setProgress((newTime / remainingTime) * 100);
+        return newTime;
+      });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (remainingTime !== undefined) {
-      setProgress((timeLeft / remainingTime) * 100);
-    }
-  }, [timeLeft, remainingTime]);
+  }, [remainingTime]);
 
   const formatTime = (time) => {
     const days = Math.floor(time / (1000 * 60 * 60 * 24));

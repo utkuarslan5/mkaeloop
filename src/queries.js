@@ -2,11 +2,24 @@ import { HttpError } from "wasp/server";
 
 export const getLoops = async (args, context) => {
   try {
-    const loops = await context.entities.Loop.findMany({
-      where: { isActive: true },
-    });
+    const loops = await context.entities.Loop.findMany();
 
     return loops || [];
+  } catch (error) {
+    throw new HttpError(500, error.message);
+  }
+};
+
+export const getActiveLoops = async (args, context) => {
+  try {
+    const activeLoops = await context.entities.Loop.findMany({
+      where: { isActive: true },
+      include: {
+        iterations: true,
+      },
+    });
+
+    return activeLoops;
   } catch (error) {
     throw new HttpError(500, error.message);
   }
