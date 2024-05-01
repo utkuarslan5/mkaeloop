@@ -1,5 +1,3 @@
-import React from "react";
-
 import LoopForm from "./LoopForm";
 import LoopList from "./LoopList";
 

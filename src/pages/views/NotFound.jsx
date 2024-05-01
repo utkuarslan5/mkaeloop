@@ -1,8 +1,4 @@
-import React from 'react'
-
 import { Helmet } from 'react-helmet'
-
-import './styles/not-found.css'
 
 const NotFound = (props) => {
   return (

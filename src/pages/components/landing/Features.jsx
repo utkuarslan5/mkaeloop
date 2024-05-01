@@ -1,7 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./styles/feature.css";
-
 const Features = () => (
   <>
     <h2>Common Creator Challenges:</h2>

@@ -1,7 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./styles/question.css";
-
 export const FAQ = () => (
   <div className="home-faq">
     <div className="faqContainer">
@@ -70,11 +66,6 @@ const Question = ({
       <span className="bodySmall">{answer}</span>
     </div>
   );
-};
-
-Question.propTypes = {
-  question: PropTypes.string,
-  answer: PropTypes.string,
 };
 
 export default FAQ;
