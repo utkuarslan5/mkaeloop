@@ -11,6 +11,11 @@ export const createLoop = async (args, context) => {
         frequency: args.frequency,
         isActive: true,
         createdById: args.createdById,
+        participants: {
+          connect: {
+            id: args.createdById,
+          },
+        },
       },
     });
 
@@ -22,7 +27,159 @@ export const createLoop = async (args, context) => {
     throw error;
   }
 };
+export const joinLoop = async (args, context) => {
+  try {
+    const { user, loop } = args;
+    const updatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: {
+        participants: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        participants: true,
+      },
+    });
 
+    console.log("Updated loop after joining:", updatedLoop);
+    return updatedLoop;
+  } catch (error) {
+    console.error("Error joining loop:", error);
+    throw error;
+  }
+};
+export const watchLoop = async (args, context) => {
+  try {
+    const { user, loop } = args;
+    const updatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: {
+        watchers: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        watchers: true,
+      },
+    });
+
+    console.log("Updated loop after watching:", updatedLoop);
+    return updatedLoop;
+  } catch (error) {
+    console.error("Error watching loop:", error);
+    throw error;
+  }
+};
+export const leaveLoop = async (args, context) => {
+  try {
+    const { user, loop } = args;
+    const updatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: {
+        participants: {
+          disconnect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        participants: true,
+      },
+    });
+
+    return updatedLoop;
+  } catch (error) {
+    console.error("Error leaving loop:", error);
+    throw error;
+  }
+};
+
+export const unwatchLoop = async (args, context) => {
+  try {
+    const { user, loop } = args;
+    const updatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: {
+        watchers: {
+          disconnect: {
+            id: user.id,
+          },
+        },
+      },
+      include: {
+        watchers: true,
+      },
+    });
+
+    return updatedLoop;
+  } catch (error) {
+    console.error("Error unwatching loop:", error);
+    throw error;
+  }
+};
+
+export const deleteLoop = async (args, context) => {
+  try {
+    const { loop, user } = args;
+    const loopToDelete = await context.entities.Loop.findUnique({
+      where: { id: loop.id },
+      include: { iterations: true },
+    });
+
+    if (!loopToDelete) {
+      throw new Error(`Loop with id ${loop.id} not found`);
+    }
+
+    if (loopToDelete.createdById !== user.id) {
+      throw new Error("You can only delete loops that you created.");
+    }
+
+    await context.entities.Iteration.deleteMany({
+      where: { loopId: loop.id },
+    });
+
+    const deletedLoop = await context.entities.Loop.delete({
+      where: { id: loop.id },
+    });
+
+    return deletedLoop;
+  } catch (error) {
+    console.error("Error deleting loop:", error);
+    throw error;
+  }
+};
+
+export const deactivateLoop = async (args, context) => {
+  try {
+    const { loop, user } = args;
+    const loopToDeactivate = await context.entities.Loop.findUnique({
+      where: { id: loop.id },
+    });
+
+    if (!loopToDeactivate) {
+      throw new Error(`Loop with id ${loop.id} not found`);
+    }
+
+    if (loopToDeactivate.createdById !== user.id) {
+      throw new Error("You can only deactivate loops that you created.");
+    }
+
+    const deactivatedLoop = await context.entities.Loop.update({
+      where: { id: loop.id },
+      data: { isActive: false },
+    });
+
+    return deactivatedLoop;
+  } catch (error) {
+    console.error("Error deactivating loop:", error);
+    throw error;
+  }
+};
 export const createIterations = async (args, context) => {
   const loop = args.loop;
   console.log("Creating iterations...");
@@ -148,60 +305,3 @@ export const createCheckin = async (args, context) => {
   }
 };
 
-export const deleteLoop = async (args, context) => {
-  try {
-    const { loop, user } = args;
-    const loopToDelete = await context.entities.Loop.findUnique({
-      where: { id: loop.id },
-      include: { iterations: true },
-    });
-
-    if (!loopToDelete) {
-      throw new Error(`Loop with id ${loop.id} not found`);
-    }
-
-    if (loopToDelete.createdById !== user.id) {
-      throw new Error("You can only delete loops that you created.");
-    }
-
-    await context.entities.Iteration.deleteMany({
-      where: { loopId: loop.id },
-    });
-
-    const deletedLoop = await context.entities.Loop.delete({
-      where: { id: loop.id },
-    });
-
-    return deletedLoop;
-  } catch (error) {
-    console.error("Error deleting loop:", error);
-    throw error;
-  }
-};
-
-export const deactivateLoop = async (args, context) => {
-  try {
-    const { loop, user } = args;
-    const loopToDeactivate = await context.entities.Loop.findUnique({
-      where: { id: loop.id },
-    });
-
-    if (!loopToDeactivate) {
-      throw new Error(`Loop with id ${loop.id} not found`);
-    }
-
-    if (loopToDeactivate.createdById !== user.id) {
-      throw new Error("You can only deactivate loops that you created.");
-    }
-
-    const deactivatedLoop = await context.entities.Loop.update({
-      where: { id: loop.id },
-      data: { isActive: false },
-    });
-
-    return deactivatedLoop;
-  } catch (error) {
-    console.error("Error deactivating loop:", error);
-    throw error;
-  }
-};

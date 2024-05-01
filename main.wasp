@@ -24,11 +24,12 @@ app MkaeLoop {
 // Entities
 entity User {=psl
   id            Int      @id @default(autoincrement())
-  loops         Loop[]   @relation("UserLoops")
   checkins      Checkin[]
+  createdLoops         Loop[]   @relation("UserLoops")
+  watchedLoops  Loop[]   @relation("LoopWatchers")
+  participatedLoops Loop[] @relation("LoopParticipants")
 psl=}
 
-//TODO: subscribe to loops
 entity Loop {=psl
   id            Int        @id @default(autoincrement())
   name          String
@@ -38,6 +39,8 @@ entity Loop {=psl
   isActive      Boolean    @default(true)
   createdById   Int
   createdBy     User       @relation("UserLoops", fields: [createdById], references: [id])
+  watchers      User[]     @relation("LoopWatchers")
+  participants  User[]     @relation("LoopParticipants")
   iterations    Iteration[]
 psl=}
 
@@ -66,6 +69,33 @@ action createLoop {
   fn: import { createLoop } from "@src/actions.js",
   entities: [Loop]
 }
+action deleteLoop {
+  fn: import { deleteLoop } from "@src/actions.js",
+  entities: [Loop, Iteration]
+}
+action deactivateLoop {
+  fn: import { deactivateLoop } from "@src/actions.js",
+  entities: [Loop]
+}
+action joinLoop {
+  fn: import { joinLoop } from "@src/actions.js",
+  entities: [Loop]
+}
+
+action watchLoop {
+  fn: import { watchLoop } from "@src/actions.js",
+  entities: [Loop]  
+}
+
+action leaveLoop {
+  fn: import { leaveLoop } from "@src/actions.js", 
+  entities: [Loop]
+}
+
+action unwatchLoop {
+  fn: import { unwatchLoop } from "@src/actions.js",
+  entities: [Loop]
+}
 action createIteration {
   fn: import { createIteration } from "@src/actions.js",
   entities: [Iteration, Loop]
@@ -78,14 +108,6 @@ action createIterations {
   fn: import { createIterations } from "@src/actions.js",
   entities: [Iteration, Loop]
 }
-action deleteLoop {
-  fn: import { deleteLoop } from "@src/actions.js",
-  entities: [Loop, Iteration]
-}
-action deactivateLoop {
-  fn: import { deactivateLoop } from "@src/actions.js",
-  entities: [Loop]
-}
 
 // Queries
 query getLoops {
@@ -95,6 +117,14 @@ query getLoops {
 query getActiveLoops {
   fn: import { getActiveLoops } from "@src/queries.js",
   entities: [Loop]
+}
+query getLoopParticipants {
+  fn: import { getLoopParticipants } from "@src/queries.js",
+  entities: [User, Loop]
+}
+query getLoopWatchers {
+  fn: import { getLoopWatchers } from "@src/queries.js",
+  entities: [User, Loop]
 }
 query getUser {
   fn: import { getUser } from "@src/queries.js",

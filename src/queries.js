@@ -16,10 +16,65 @@ export const getActiveLoops = async (args, context) => {
       where: { isActive: true },
       include: {
         iterations: true,
+        createdBy: true,
+        watchers: {
+          select: {
+            id: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
     return activeLoops;
+  } catch (error) {
+    throw new HttpError(500, error.message);b
+  }
+};
+
+export const getLoopById = async ({ id }, context) => {
+  try {
+    const loop = await context.entities.Loop.findUnique({
+      where: { id },
+      include: {
+        iterations: true,
+        createdBy: true,
+        watchers: true,
+        participants: true,
+      },
+    });
+
+    if (!loop) throw new HttpError(404, "No loop with id " + id);
+
+    return loop;
+  } catch (error) {
+    throw new HttpError(500, error.message);
+  }
+};
+
+export const getLoopParticipants = async ({ loopId }, context) => {
+  try {
+    const participants = await context.entities.User.findMany({
+      where: { participatedLoops: { some: { id: loopId } } },
+    });
+
+    return participants;
+  } catch (error) {
+    throw new HttpError(500, error.message);
+  }
+};
+
+export const getLoopWatchers = async ({ loopId }, context) => {
+  try {
+    const watchers = await context.entities.User.findMany({
+      where: { watchedLoops: { some: { id: loopId } } },
+    });
+
+    return watchers;
   } catch (error) {
     throw new HttpError(500, error.message);
   }
@@ -35,32 +90,75 @@ export const getUser = async ({ id }, context) => {
       where: { id },
       select: {
         id: true,
-        firstName: true,
-        lastName: true,
-        loops: true,
+        createdLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        watchedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        participatedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
       },
     });
 
     if (!user) throw new HttpError(404, "No user with id " + id);
 
     return user;
-  } catch (error) {
-    throw new HttpError(500, error.message);
-  }
-};
-
-export const getLoopById = async ({ id }, context) => {
-  try {
-    const loop = await context.entities.Loop.findUnique({
-      where: { id },
-      include: {
-        iterations: true,
-      },
-    });
-
-    if (!loop) throw new HttpError(404, "No loop with id " + id);
-
-    return loop;
   } catch (error) {
     throw new HttpError(500, error.message);
   }
