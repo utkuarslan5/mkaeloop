@@ -10,7 +10,7 @@ const Header = () => {
 
   return (
     <header className="bg-primary-800 text-white p-4">
-      <div className="container mx-auto px-4 py-2 flex justify-between">
+      <div className="container mx-auto px-4 py-2 flex justify-between w-2/3 mx-auto">
         <HeaderLogo />
         {user ? <UserGreeting user={user} /> : <LoginLink />}
       </div>
@@ -61,7 +61,7 @@ export const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Helmet>
-        <title>MakeLoop</title>
+        <title>CreatorLoop</title>
       </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-2 flex-grow">{children}</main>

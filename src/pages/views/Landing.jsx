@@ -11,9 +11,13 @@ import "./styles/landing.css";
 const Landing = () => {
   return (
     <div className="home-container">
-      <Hero />
-      <Features />
+      <Hero
+        header="Helping digital creators ship often and iterative to break the cycle of unfinished projects."
+        subheader="We are great at staring, not so much in finishing. 
+        If this resonates with you, welcome to the club."
+      />
       <Steps />
+      <Features />
       <Testimonials />
       <Banner />
       <Pricing />
