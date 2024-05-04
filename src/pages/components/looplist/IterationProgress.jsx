@@ -13,6 +13,15 @@ const IterationProgress = ({ loop }) => {
   };
 
   const currentIteration = getCurrentIteration(loop.iterations);
+
+  if (!loop || !loop.iterations || loop.iterations.length === 0) {
+    return <div>No iterations found.</div>;
+  }
+
+  if (!currentIteration) {
+    return <div>No current iteration found.</div>;
+  }
+
   return (
     <div>
       {Array.from({ length: loop.numIterations }, (_, i) => (

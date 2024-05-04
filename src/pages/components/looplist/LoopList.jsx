@@ -1,7 +1,4 @@
-import React, { useState } from "react";
-import { useQuery } from "wasp/client/operations";
 import {
-  getActiveLoops,
   deleteLoop,
   deactivateLoop,
   joinLoop,
@@ -9,19 +6,12 @@ import {
   leaveLoop,
   unwatchLoop,
 } from "wasp/client/operations";
-import LoopCard from "../components/looplist/LoopCard";
-import { useAuth } from "wasp/client/auth";
+import LoopCard from "./LoopCard";
 
-const LoopList = () => {
-  const { data: loops, error, isLoading, refetch } = useQuery(getActiveLoops);
-  const { data: user } = useAuth();
-
+const LoopList = ({ user, loops }) => {
   const handleDelete = async (loop, user) => {
     try {
       const deletedLoop = await deleteLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error deleting loop:", error);
     }
@@ -30,9 +20,6 @@ const LoopList = () => {
   const handleDeactivate = async (loop, user) => {
     try {
       const deactivatedLoop = await deactivateLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error deactivating loop:", error);
     }
@@ -41,9 +28,6 @@ const LoopList = () => {
   const handleJoinLoop = async (loop, user) => {
     try {
       const updatedLoop = await joinLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error joining loop:", error);
     }
@@ -52,9 +36,6 @@ const LoopList = () => {
   const handleWatchLoop = async (loop, user) => {
     try {
       const updatedLoop = await watchLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error watching loop:", error);
     }
@@ -63,9 +44,6 @@ const LoopList = () => {
   const handleLeaveLoop = async (loop, user) => {
     try {
       const updatedLoop = await leaveLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error leaving loop:", error);
     }
@@ -74,21 +52,11 @@ const LoopList = () => {
   const handleUnwatchLoop = async (loop, user) => {
     try {
       const updatedLoop = await unwatchLoop({ loop, user });
-      setTimeout(() => {
-        refetch();
-      }, 1000);
     } catch (error) {
       console.error("Error unwatching loop:", error);
     }
   };
 
-  if (isLoading) {
-    return <div>Waiting for the loops to jump through the hoops... 🐰🔄</div>;
-  }
-
-  if (error) {
-    return <div>Oops, the loops got tangled! 🥴🌀 {error.message}</div>;
-  }
   return (
     <div className="mt-4 grid grid-cols-3 gap-4">
       {loops

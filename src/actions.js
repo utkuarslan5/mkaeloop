@@ -2,7 +2,6 @@ import { HttpError } from "wasp/server";
 
 export const createLoop = async (args, context) => {
   try {
-    console.log("Creating loop...");
     const loop = await context.entities.Loop.create({
       data: {
         name: args.name,
@@ -18,13 +17,9 @@ export const createLoop = async (args, context) => {
         },
       },
     });
-
-    console.log("Loop created successfully.");
-
     return loop;
   } catch (error) {
-    console.error("Error creating loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
 export const joinLoop = async (args, context) => {
@@ -44,11 +39,9 @@ export const joinLoop = async (args, context) => {
       },
     });
 
-    console.log("Updated loop after joining:", updatedLoop);
     return updatedLoop;
   } catch (error) {
-    console.error("Error joining loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
 export const watchLoop = async (args, context) => {
@@ -68,11 +61,9 @@ export const watchLoop = async (args, context) => {
       },
     });
 
-    console.log("Updated loop after watching:", updatedLoop);
     return updatedLoop;
   } catch (error) {
-    console.error("Error watching loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
 export const leaveLoop = async (args, context) => {
@@ -94,11 +85,9 @@ export const leaveLoop = async (args, context) => {
 
     return updatedLoop;
   } catch (error) {
-    console.error("Error leaving loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-
 export const unwatchLoop = async (args, context) => {
   try {
     const { user, loop } = args;
@@ -118,11 +107,9 @@ export const unwatchLoop = async (args, context) => {
 
     return updatedLoop;
   } catch (error) {
-    console.error("Error unwatching loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-
 export const deleteLoop = async (args, context) => {
   try {
     const { loop, user } = args;
@@ -132,11 +119,11 @@ export const deleteLoop = async (args, context) => {
     });
 
     if (!loopToDelete) {
-      throw new Error(`Loop with id ${loop.id} not found`);
+      throw new HttpError(404, `Loop with id ${loop.id} not found`);
     }
 
     if (loopToDelete.createdById !== user.id) {
-      throw new Error("You can only delete loops that you created.");
+      throw new HttpError(403, "You can only delete loops that you created.");
     }
 
     await context.entities.Iteration.deleteMany({
@@ -149,11 +136,9 @@ export const deleteLoop = async (args, context) => {
 
     return deletedLoop;
   } catch (error) {
-    console.error("Error deleting loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-
 export const deactivateLoop = async (args, context) => {
   try {
     const { loop, user } = args;
@@ -162,11 +147,14 @@ export const deactivateLoop = async (args, context) => {
     });
 
     if (!loopToDeactivate) {
-      throw new Error(`Loop with id ${loop.id} not found`);
+      throw new HttpError(404, `Loop with id ${loop.id} not found`);
     }
 
     if (loopToDeactivate.createdById !== user.id) {
-      throw new Error("You can only deactivate loops that you created.");
+      throw new HttpError(
+        403,
+        "You can only deactivate loops that you created."
+      );
     }
 
     const deactivatedLoop = await context.entities.Loop.update({
@@ -176,13 +164,11 @@ export const deactivateLoop = async (args, context) => {
 
     return deactivatedLoop;
   } catch (error) {
-    console.error("Error deactivating loop:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
 export const createIterations = async (args, context) => {
   const loop = args.loop;
-  console.log("Creating iterations...");
   const now = new Date();
   const endDate = new Date(now);
 
@@ -197,7 +183,7 @@ export const createIterations = async (args, context) => {
       endDate.setMonth(now.getMonth() + loop.numIterations);
       break;
     default:
-      throw new Error(`Unsupported frequency: ${loop.frequency}`);
+      throw new HttpError(400, `Unsupported frequency: ${loop.frequency}`);
   }
 
   const iterations = [];
@@ -220,19 +206,23 @@ export const createIterations = async (args, context) => {
         break;
     }
 
-    const iteration = await context.entities.Iteration.create({
-      data: {
-        loop: {
-          connect: {
-            id: loop.id,
+    try {
+      const iteration = await context.entities.Iteration.create({
+        data: {
+          loop: {
+            connect: {
+              id: loop.id,
+            },
           },
+          startTime,
+          endTime,
         },
-        startTime,
-        endTime,
-      },
-    });
+      });
 
-    iterations.push(iteration);
+      iterations.push(iteration);
+    } catch (error) {
+      throw new HttpError(500, error.message);
+    }
   }
 
   try {
@@ -250,15 +240,11 @@ export const createIterations = async (args, context) => {
       include: { iterations: true },
     });
 
-    // console.log("Updated loop with iterations:", updatedLoop);
-    console.log("Iterations connected to the loop successfully.");
     return updatedLoop;
   } catch (error) {
-    console.error("Error updating loop with iterations:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-
 export const createIteration = async (args, context) => {
   try {
     const iteration = await context.entities.Iteration.create({
@@ -275,11 +261,9 @@ export const createIteration = async (args, context) => {
 
     return iteration;
   } catch (error) {
-    console.error("Error creating iteration:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-
 export const createCheckin = async (args, context) => {
   try {
     const checkin = await context.entities.Checkin.create({
@@ -300,8 +284,6 @@ export const createCheckin = async (args, context) => {
 
     return checkin;
   } catch (error) {
-    console.error("Error creating checkin:", error);
-    throw error;
+    throw new HttpError(500, error.message);
   }
 };
-

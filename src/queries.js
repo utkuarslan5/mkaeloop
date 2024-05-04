@@ -1,5 +1,180 @@
 import { HttpError } from "wasp/server";
 
+export const getUser = async ({ id }, context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+
+  try {
+    const user = await context.entities.User.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        profileImage: true,
+        createdLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        watchedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        participatedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+      },
+    });
+
+    if (!user) throw new HttpError(404, "No user with id " + id);
+
+    return user;
+  } catch (error) {
+    throw new HttpError(500, error.message);
+  }
+};
+
+export const getUserByUsername = async ({ username }, context) => {
+  try {
+    const user = await context.entities.User.findUnique({
+      where: { username },
+      select: {
+        id: true,
+        username: true,
+        profileImage: true,
+        createdLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        watchedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+        participatedLoops: {
+          select: {
+            id: true,
+            name: true,
+            projectType: true,
+            numIterations: true,
+            frequency: true,
+            isActive: true,
+            createdBy: {
+              select: {
+                id: true,
+              },
+            },
+            watchers: {
+              select: {
+                id: true,
+              },
+            },
+            iterations: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new HttpError(404, "No user with username " + username);
+    }
+    return user;
+  } catch (error) {
+    console.error(`Error getting user by username: ${error.message}`);
+    throw new HttpError(500, error.message);
+  }
+};
+
 export const getLoops = async (args, context) => {
   try {
     const loops = await context.entities.Loop.findMany();
@@ -75,90 +250,6 @@ export const getLoopWatchers = async ({ loopId }, context) => {
     });
 
     return watchers;
-  } catch (error) {
-    throw new HttpError(500, error.message);
-  }
-};
-
-export const getUser = async ({ id }, context) => {
-  if (!context.user) {
-    throw new HttpError(401);
-  }
-
-  try {
-    const user = await context.entities.User.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        createdLoops: {
-          select: {
-            id: true,
-            name: true,
-            projectType: true,
-            numIterations: true,
-            frequency: true,
-            isActive: true,
-            watchers: {
-              select: {
-                id: true,
-              },
-            },
-            participants: {
-              select: {
-                id: true,
-              },
-            },
-            iterations: true,
-          },
-        },
-        watchedLoops: {
-          select: {
-            id: true,
-            name: true,
-            projectType: true,
-            numIterations: true,
-            frequency: true,
-            isActive: true,
-            createdBy: {
-              select: {
-                id: true,
-              },
-            },
-            participants: {
-              select: {
-                id: true,
-              },
-            },
-            iterations: true,
-          },
-        },
-        participatedLoops: {
-          select: {
-            id: true,
-            name: true,
-            projectType: true,
-            numIterations: true,
-            frequency: true,
-            isActive: true,
-            createdBy: {
-              select: {
-                id: true,
-              },
-            },
-            watchers: {
-              select: {
-                id: true,
-              },
-            },
-            iterations: true,
-          },
-        },
-      },
-    });
-
-    if (!user) throw new HttpError(404, "No user with id " + id);
-
-    return user;
   } catch (error) {
     throw new HttpError(500, error.message);
   }

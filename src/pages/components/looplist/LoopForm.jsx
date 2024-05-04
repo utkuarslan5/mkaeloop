@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useAction } from "wasp/client/operations";
 import { createLoop, createIterations } from "wasp/client/operations";
-import LoopBuilder from "../components/loopform/LoopBuilder";
+import LoopBuilder from "../loopform/LoopBuilder";
 import { useAuth } from "wasp/client/auth";
-import LoginPopUp from "../auth/LoginPopUp";
-import LoopMessage from "../components/loopform/LoopMessage";
-import AcceptLoopButton from "../components/loopform/AcceptLoopButton";
+import LoginPopUp from "../../auth/LoginPopUp";
+import LoopMessage from "../loopform/LoopMessage";
+import AcceptLoopButton from "../loopform/AcceptLoopButton";
 
 const LoopForm = () => {
   const { data: user } = useAuth();
