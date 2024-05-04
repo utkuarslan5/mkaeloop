@@ -1,4 +1,4 @@
-import { Link } from 'wasp/client/router'
+import { Link } from "wasp/client/router";
 import { useAuth, logout } from "wasp/client/auth";
 import { getUsername } from "wasp/auth";
 import { Helmet } from "react-helmet";
@@ -136,11 +136,8 @@ export const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Helmet>
-<<<<<<< HEAD
         <title>MkaeLoop ~ Just ship </title>
-=======
         <title>CreatorLoop</title>
->>>>>>> c92d2de69d8f989e6bf6d738840f783aea845c1e
       </Helmet>
       <Header />
       <main className="container mx-auto px-4 py-2 flex-grow">{children}</main>
