@@ -109,28 +109,42 @@ export const unwatchLoop = async (args, context) => {
 export const deleteLoop = async (args, context) => {
   try {
     const { loop, user } = args;
+    console.log("Deleting loop:", loop);
     const loopToDelete = await context.entities.Loop.findUnique({
       where: { id: loop.id },
-      include: { iterations: true },
+      include: { iterations: { include: { checkins: true } } },
     });
 
     if (!loopToDelete) {
+      console.error(`Loop with id ${loop.id} not found`);
       throw new HttpError(404, `Loop with id ${loop.id} not found`);
     }
 
     if (loopToDelete.createdById !== user.id) {
+      console.error("You can only delete loops that you created.");
       throw new HttpError(403, "You can only delete loops that you created.");
     }
 
+    console.log("Deleting checkins for loop:", loop.id);
+    for (const iteration of loopToDelete.iterations) {
+      await context.entities.Checkin.deleteMany({
+        where: { iterationId: iteration.id },
+      });
+    }
+
+    console.log("Deleting iterations for loop:", loop.id);
     await context.entities.Iteration.deleteMany({
       where: { loopId: loop.id },
     });
 
+    console.log("Deleting loop:", loop.id);
     const deletedLoop = await context.entities.Loop.delete({
       where: { id: loop.id },
     });
+    console.log("Loop deleted:", deletedLoop);
     return deletedLoop;
   } catch (error) {
+    console.error("Error deleting loop:", error);
     throw new HttpError(500, error.message);
   }
 };

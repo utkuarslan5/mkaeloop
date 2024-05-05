@@ -104,7 +104,7 @@ action createLoop {
 }
 action deleteLoop {
   fn: import { deleteLoop } from "@src/actions.js",
-  entities: [Loop, Iteration]
+  entities: [Loop, Iteration, Checkin]
 }
 action deactivateLoop {
   fn: import { deactivateLoop } from "@src/actions.js",

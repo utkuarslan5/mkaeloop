@@ -1,5 +1,5 @@
 // ActionButtons.jsx
-import React from 'react';
+import React, { useState } from "react";
 import {
   deleteLoop,
   deactivateLoop,
@@ -7,7 +7,7 @@ import {
   watchLoop,
   leaveLoop,
   unwatchLoop,
-} from 'wasp/client/operations';
+} from "wasp/client/operations";
 
 const ActionButtons = ({
   loop,
@@ -18,10 +18,16 @@ const ActionButtons = ({
   refetch,
   setShowCheckinPopup,
 }) => {
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
+
   const handleDeleteLoop = async () => {
     try {
-      await deleteLoop({ loop, user });
-      refetch();
+      if (showDeleteConfirmation) {
+        await deleteLoop({ loop, user });
+        refetch();
+      } else {
+        setShowDeleteConfirmation(true);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -66,12 +72,31 @@ const ActionButtons = ({
   return (
     <div className="absolute top-2 right-2 flex">
       {isCreator && (
-        <button
-          className="bg-red-500 text-white px-1 py-1 rounded mr-1"
-          onClick={handleDeleteLoop}
-        >
-          Remove
-        </button>
+        <div>
+          {showDeleteConfirmation ? (
+            <div>
+              <button
+                className="bg-red-500 text-white px-1 py-1 rounded mr-1"
+                onClick={handleDeleteLoop}
+              >
+                Give up?
+              </button>
+              <button
+                className="bg-green-500 text-white px-1 py-1 rounded mr-1"
+                onClick={() => setShowDeleteConfirmation(false)}
+              >
+                Remember why you started
+              </button>
+            </div>
+          ) : (
+            <button
+              className="bg-red-500 text-white px-1 py-1 rounded mr-1"
+              onClick={handleDeleteLoop}
+            >
+              Remove
+            </button>
+          )}
+        </div>
       )}
       {!isCreator && (
         <div>
