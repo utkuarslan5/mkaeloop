@@ -218,8 +218,16 @@ export const getLoopById = async ({ id }, context) => {
       include: {
         iterations: true,
         createdBy: true,
-        watchers: true,
-        participants: true,
+        watchers: {
+          select: {
+            id: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 

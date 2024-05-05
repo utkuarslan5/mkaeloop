@@ -2,7 +2,6 @@ import { useQuery } from "wasp/client/operations";
 import { getUserByUsername } from "wasp/client/operations";
 import LoopList from "../components/looplist/LoopList";
 import { Redirect } from "react-router-dom";
-import { useAuth, logout } from "wasp/client/auth";
 const ProfilePage = (props) => {
   const {
     data: user,
@@ -11,8 +10,6 @@ const ProfilePage = (props) => {
   } = useQuery(getUserByUsername, {
     username: props.match.params.username,
   });
-
-  const { data: currentUser } = useAuth();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -42,7 +39,6 @@ const ProfilePage = (props) => {
         <div className="col-md-8">
           <LoopList
             loops={user.participatedLoops.filter((loop) => loop.isActive)}
-            user={currentUser} //the join and leave down't work becasue of the user passed on
           />
         </div>
       </div>

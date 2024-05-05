@@ -1,8 +1,9 @@
 import React from "react";
+import {getIterationsStatus} from "../utils";
 
 const LoopDetails = ({ loop }) => {
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       {loop.numIterations}{" "}
       {loop.projectType === "app"
         ? "App📱"
@@ -21,6 +22,10 @@ const LoopDetails = ({ loop }) => {
         : loop.frequency === "monthly"
         ? "Months 🗓"
         : "How often? ⏱️"}{" "}
+      <br />
+      {getIterationsStatus(loop).map((status, i) => (
+        <span key={i}>{status}</span>
+      ))}
     </div>
   );
 };

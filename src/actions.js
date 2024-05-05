@@ -38,7 +38,6 @@ export const joinLoop = async (args, context) => {
         participants: true,
       },
     });
-
     return updatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -60,7 +59,6 @@ export const watchLoop = async (args, context) => {
         watchers: true,
       },
     });
-
     return updatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -82,7 +80,6 @@ export const leaveLoop = async (args, context) => {
         participants: true,
       },
     });
-
     return updatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -104,7 +101,6 @@ export const unwatchLoop = async (args, context) => {
         watchers: true,
       },
     });
-
     return updatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -133,7 +129,6 @@ export const deleteLoop = async (args, context) => {
     const deletedLoop = await context.entities.Loop.delete({
       where: { id: loop.id },
     });
-
     return deletedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -161,7 +156,6 @@ export const deactivateLoop = async (args, context) => {
       where: { id: loop.id },
       data: { isActive: false },
     });
-
     return deactivatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -218,7 +212,6 @@ export const createIterations = async (args, context) => {
           endTime,
         },
       });
-
       iterations.push(iteration);
     } catch (error) {
       throw new HttpError(500, error.message);
@@ -239,7 +232,6 @@ export const createIterations = async (args, context) => {
       where: { id: loop.id },
       include: { iterations: true },
     });
-
     return updatedLoop;
   } catch (error) {
     throw new HttpError(500, error.message);
@@ -258,12 +250,12 @@ export const createIteration = async (args, context) => {
         endTime: args.endTime,
       },
     });
-
     return iteration;
   } catch (error) {
     throw new HttpError(500, error.message);
   }
 };
+
 export const createCheckin = async (args, context) => {
   try {
     const checkin = await context.entities.Checkin.create({
@@ -275,13 +267,21 @@ export const createCheckin = async (args, context) => {
         },
         user: {
           connect: {
-            id: context.user.id,
+            id: args.userId,
           },
         },
         proofOfWork: args.proofOfWork,
       },
     });
 
+    await context.entities.Iteration.update({
+      where: { id: args.iterationId },
+      data: { completed: true },
+    });
+
+    const updatedIteration = await context.entities.Iteration.findUnique({
+      where: { id: args.iterationId },
+    });
     return checkin;
   } catch (error) {
     throw new HttpError(500, error.message);

@@ -135,7 +135,7 @@ action createIteration {
 }
 action createCheckin {
   fn: import { createCheckin } from "@src/actions.js",
-  entities: [Checkin, Iteration, User]
+  entities: [Checkin, Iteration]
 }
 action createIterations {
   fn: import { createIterations } from "@src/actions.js",

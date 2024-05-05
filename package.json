@@ -1,15 +1,16 @@
 {
   "name": "MkaeLoop",
   "dependencies": {
-    "wasp": "file:.wasp/out/sdk/wasp",
+    "js-confetti": "^0.12.0",
+    "prop-types": "15.7.2",
     "react": "^18.2.0",
     "react-helmet": "^6.1.0",
-    "prop-types": "15.7.2"
+    "wasp": "file:.wasp/out/sdk/wasp"
   },
   "devDependencies": {
-    "typescript": "^5.1.0",
-    "vite": "^4.3.9",
     "@types/react": "^18.0.37",
-    "prisma": "4.16.2"
+    "prisma": "4.16.2",
+    "typescript": "^5.1.0",
+    "vite": "^4.3.9"
   }
 }

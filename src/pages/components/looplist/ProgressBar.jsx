@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getRemainingTime } from "./utils.js";
 
 const ProgressBar = ({ currentIteration }) => {
   const [progress, setProgress] = useState(100);
@@ -65,12 +66,5 @@ const ProgressBar = ({ currentIteration }) => {
   );
 };
 
-const getRemainingTime = (currentIteration) => {
-  const remainingTime =
-    currentIteration && currentIteration.endTime
-      ? Math.max(0, currentIteration.endTime.getTime() - new Date().getTime())
-      : undefined;
-  return remainingTime;
-};
 
 export default ProgressBar;
