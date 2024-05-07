@@ -9,14 +9,14 @@ const ProgressBar = ({ currentIteration }) => {
     const interval = setInterval(() => {
       setTimeLeft((prevTime) => {
         const newTime = prevTime - 1000;
+        const remainingTime = getRemainingTime(currentIteration);
         if (newTime <= 0) {
           clearInterval(interval);
-          setProgress(0);
-          return 0;
+          setProgress(0); // Set progress to 0 when iteration is complete
+          return remainingTime; // Set timeLeft to the remaining time for the next iteration
         }
-        const progressValue =
-          (newTime / getRemainingTime(currentIteration)) * 100;
-        setProgress(100 - progressValue);
+        const progressValue = (newTime / remainingTime) * 100;
+        setProgress(progressValue);
         return newTime;
       });
     }, 1000);
@@ -37,6 +37,8 @@ const ProgressBar = ({ currentIteration }) => {
     }
   };
 
+  const progressBarColor = progress === 0 ? "#ff0000" : "#000";
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
@@ -56,7 +58,7 @@ const ProgressBar = ({ currentIteration }) => {
             style={{
               width: `${progress}%`,
               height: "100%",
-              backgroundColor: "#000",
+              backgroundColor: progressBarColor,
               borderRadius: "4px",
             }}
           />
@@ -65,6 +67,5 @@ const ProgressBar = ({ currentIteration }) => {
     </div>
   );
 };
-
 
 export default ProgressBar;

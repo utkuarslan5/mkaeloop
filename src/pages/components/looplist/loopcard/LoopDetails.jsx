@@ -6,13 +6,13 @@ const LoopDetails = ({ loop }) => {
     <div style={{ textAlign: "center" }}>
       {loop.numIterations}{" "}
       {loop.projectType === "app"
-        ? "App📱"
+        ? "Apps📱"
         : loop.projectType === "design"
-        ? "Design🎨"
+        ? "Designs🎨"
         : loop.projectType === "song"
-        ? "Song🎵"
+        ? "Songs🎵"
         : loop.projectType === "writing"
-        ? "✍️ Writing"
+        ? "✍️ Writings"
         : "What?🤔"}{" "}
       in {loop.numIterations}{" "}
       {loop.frequency === "daily"

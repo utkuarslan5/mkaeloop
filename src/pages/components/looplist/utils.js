@@ -22,7 +22,7 @@ export const getIterationsStatus = (loop) => {
     } else if (iteration.endTime < new Date()) {
       return "❌";
     } else {
-      return "❔";
+      return "🔘";
     }
   });
 };

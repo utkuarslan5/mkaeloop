@@ -7,14 +7,14 @@ const LoopMessage = ({ projectType, frequency, iterations }) => (
     </p>
     <h2 className="text-2xl font-bold">
       📝 Create {iterations}{" "}
-      {projectType === "App"
-        ? "📱 App"
-        : projectType === "Design"
-        ? "🎨 Design"
-        : projectType === "Song"
-        ? "🎵 Song"
-        : projectType === "Writing"
-        ? "✍️ Writing"
+      {projectType === "app"
+        ? "📱 Apps"
+        : projectType === "design"
+        ? "🎨 Designs"
+        : projectType === "song"
+        ? "🎵 Songs"
+        : projectType === "writing"
+        ? "✍️ Writings"
         : "🤔 What?"}{" "}
       in {iterations}{" "}
       {frequency === "daily"

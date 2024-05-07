@@ -70,46 +70,54 @@ const ActionButtons = ({
   };
 
   return (
-    <div className="absolute top-2 right-2 flex">
+    <div className="absolute top-2 right-2 flex flex-col">
       {isCreator && (
-        <div>
+        <div className="flex flex-col">
           {showDeleteConfirmation ? (
-            <div>
+            <div className="flex flex-col">
               <button
-                className="bg-red-500 text-white px-1 py-1 rounded mr-1"
+                className="bg-red-500 text-white px-1 py-1 rounded mb-1"
                 onClick={handleDeleteLoop}
               >
                 Give up?
               </button>
               <button
-                className="bg-green-500 text-white px-1 py-1 rounded mr-1"
+                className="bg-green-500 text-white px-1 py-1 rounded mb-1"
                 onClick={() => setShowDeleteConfirmation(false)}
               >
                 Remember why you started
               </button>
             </div>
           ) : (
-            <button
-              className="bg-red-500 text-white px-1 py-1 rounded mr-1"
-              onClick={handleDeleteLoop}
-            >
-              Remove
-            </button>
+            <div className="flex flex-col">
+              <button
+                className="bg-red-500 text-white px-1 py-1 rounded mb-1"
+                onClick={handleDeleteLoop}
+              >
+                Remove
+              </button>
+              <button
+                className="bg-green-500 text-white px-1 py-1 rounded mb-1"
+                onClick={() => setShowCheckinPopup(true)}
+              >
+                Checkin
+              </button>
+            </div>
           )}
         </div>
       )}
       {!isCreator && (
-        <div>
-          {isParticipant ? (
-            <div>
+        <div className="flex flex-col">
+          {/* {isParticipant ? (
+            <div className="flex flex-col">
               <button
-                className="bg-red-500 text-white px-1 py-1 rounded mr-1"
+                className="bg-red-500 text-white px-1 py-1 rounded mb-1"
                 onClick={handleLeaveLoop}
               >
                 Leave
               </button>
               <button
-                className="bg-green-500 text-white px-1 py-1 rounded mr-1"
+                className="bg-green-500 text-white px-1 py-1 rounded mb-1"
                 onClick={() => setShowCheckinPopup(true)}
               >
                 Checkin
@@ -117,12 +125,12 @@ const ActionButtons = ({
             </div>
           ) : (
             <button
-              className="bg-green-500 text-white px-1 py-1 rounded mr-1"
+              className="bg-green-500 text-white px-1 py-1 rounded mb-1"
               onClick={handleJoinLoop}
             >
               Join
             </button>
-          )}
+          )} */}
           {isWatcher ? (
             <button
               className="bg-blue-500 text-white px-1 py-1 rounded"

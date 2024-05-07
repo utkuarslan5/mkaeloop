@@ -32,10 +32,10 @@ const ProjectTypeSelect = ({ value, onChange }) => (
     onChange={onChange}
   >
     <option value="">🤔 What?</option>
-    <option value="App">📱 App</option>
-    <option value="Design">🎨 Design</option>
-    <option value="Song">🎵 Song</option>
-    <option value="Writing">✍️ Writing</option>
+    <option value="app">📱 App</option>
+    <option value="design">🎨 Design</option>
+    <option value="song">🎵 Song</option>
+    <option value="writing">✍️ Writing</option>
   </select>
 );
 

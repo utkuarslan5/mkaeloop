@@ -7,6 +7,7 @@ const ProfilePage = (props) => {
     data: user,
     isLoading,
     error,
+    refetch
   } = useQuery(getUserByUsername, {
     username: props.match.params.username,
   });
@@ -39,6 +40,7 @@ const ProfilePage = (props) => {
         <div className="col-md-8">
           <LoopList
             loops={user.participatedLoops.filter((loop) => loop.isActive)}
+            refetch={refetch}
           />
         </div>
       </div>

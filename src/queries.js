@@ -33,6 +33,7 @@ export const getUser = async ({ id }, context) => {
             participants: {
               select: {
                 id: true,
+                username: true,
               },
             },
             iterations: true,
@@ -54,6 +55,7 @@ export const getUser = async ({ id }, context) => {
             participants: {
               select: {
                 id: true,
+                username: true,
               },
             },
             iterations: true,
@@ -75,6 +77,12 @@ export const getUser = async ({ id }, context) => {
             watchers: {
               select: {
                 id: true,
+              },
+            },
+            participants: {
+              select: {
+                id: true,
+                username: true,
               },
             },
             iterations: true,
@@ -152,9 +160,15 @@ export const getUserByUsername = async ({ username }, context) => {
             createdBy: {
               select: {
                 id: true,
+                username: true,
               },
             },
             watchers: {
+              select: {
+                id: true,
+              },
+            },
+            participants: {
               select: {
                 id: true,
               },
@@ -195,11 +209,13 @@ export const getActiveLoops = async (args, context) => {
         watchers: {
           select: {
             id: true,
+            username: true,
           },
         },
         participants: {
           select: {
             id: true,
+            username: true,
           },
         },
       },
@@ -265,19 +281,40 @@ export const getLoopWatchers = async ({ loopId }, context) => {
 
 export const getIterationsByLoopId = async ({ loopId }, context) => {
   try {
+    console.log("Getting iterations by loopId:", loopId);
     const iterations = await context.entities.Iteration.findMany({
       where: { loopId },
+      include: {
+        checkins: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                username: true,
+                profileImage: true,
+                bio: true,
+                createdLoops: true,
+                watchedLoops: true,
+                participatedLoops: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!iterations || iterations.length === 0) {
       throw new HttpError(404, "No iterations found for the given loop ID");
     }
 
+    console.log("Iterations found:", iterations.length);
     return iterations;
   } catch (error) {
+    console.error("Error getting iterations:", error);
     throw new HttpError(500, error.message);
   }
 };
+
 
 export const getCheckinsByIterationId = async ({ iterationId }, context) => {
   try {

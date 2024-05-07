@@ -1,6 +1,7 @@
 {
   "name": "MkaeLoop",
   "dependencies": {
+    "@headlessui/react": "^1.7.19",
     "js-confetti": "^0.12.0",
     "prop-types": "15.7.2",
     "react": "^18.2.0",
