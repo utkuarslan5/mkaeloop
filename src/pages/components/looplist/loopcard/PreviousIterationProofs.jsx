@@ -13,6 +13,7 @@ const PreviousIterationsProofs = ({ loop }) => {
 
   return (
     <div className="mt-8">
+      <h2 className="mb-4 text-lg font-semibold">Previous Checkins</h2>
       <div className="grid grid-cols-3 gap-4">
         {iterations.map((iteration, index) => (
           <div key={index} className="mb-4">

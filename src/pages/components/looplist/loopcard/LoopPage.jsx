@@ -9,7 +9,7 @@ const LoopPage = ({ loop, isOpen, closeModal }) => {
   return (
     isOpen && (
       <div className="fixed inset-0 z-50 overflow-auto bg-black bg-opacity-50 flex items-center justify-center">
-        <div className="bg-white rounded-lg p-8 max-w-7xl relative">
+        <div className="bg-white rounded-lg p-12 max-w-screen-xl relative">
           <button
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
             onClick={closeModal}

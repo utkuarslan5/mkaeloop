@@ -65,7 +65,7 @@ const LoopForm = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-4xl mx-auto">
       <LoopBuilder
         projectType={projectType}
         frequency={frequency}
@@ -82,7 +82,7 @@ const LoopForm = () => {
         />
       ) : null}
       <AcceptLoopButton onClick={handleAcceptLoop} />
-      {showLoginPopUp && <LoginPopUp />}
+      {showLoginPopUp && <LoginPopUp setShowLoginPopUp={setShowLoginPopUp} />}
     </div>
   );
 };

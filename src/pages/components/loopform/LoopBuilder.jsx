@@ -6,16 +6,16 @@ const LoopBuilder = ({
   setProjectType,
   setFrequency,
 }) => (
-  <div className="flex flex-col items-start gap-4 mb-4">
+  <div className="flex flex-col items-center gap-4 mb-8">
     <div className="flex items-center gap-2">
-      <span>I'll make</span>
+      <span className="text-xl">I'll make</span>
       <IterationsInput value={iterations} onChange={setIterations} />
       <ProjectTypeSelect
         value={projectType}
         onChange={(e) => setProjectType(e.target.value)}
       />
-      
-      <span>in</span>
+
+      <span className="text-xl">in</span>
       <IterationsOutput iterations={iterations} />
       <FrequencySelect
         value={frequency}
@@ -27,7 +27,7 @@ const LoopBuilder = ({
 
 const ProjectTypeSelect = ({ value, onChange }) => (
   <select
-    className="border rounded px-2 py-1"
+    className="border rounded px-4 py-2"
     value={value}
     onChange={onChange}
   >
@@ -41,7 +41,7 @@ const ProjectTypeSelect = ({ value, onChange }) => (
 
 const FrequencySelect = ({ value, onChange }) => (
   <select
-    className="border rounded px-2 py-1"
+    className="border rounded px-4 py-2"
     value={value}
     onChange={onChange}
   >
@@ -57,7 +57,7 @@ const IterationsInput = ({ value, onChange }) => (
     type="number"
     min="1"
     placeholder="X"
-    className="border rounded px-1 py-1 w-16"
+    className="border rounded px-2 py-2 w-24"
     value={value || ""}
     onChange={(e) => onChange(parseInt(e.target.value, 10))}
   />
@@ -65,10 +65,8 @@ const IterationsInput = ({ value, onChange }) => (
 
 const IterationsOutput = ({ iterations }) => (
   <div className="flex gap-2">
-    { iterations }
+    <span className="text-2xl">{iterations}</span>
   </div>
 );
-
-
 
 export default LoopBuilder;

@@ -1,8 +1,8 @@
 import React from "react";
 
 const LoopMessage = ({ projectType, frequency, iterations }) => (
-  <div className="bg-blue-100 p-4 rounded mb-4">
-    <p className="text-xl mb-2">
+  <div className="bg-primary-600 p-8 rounded mb-4 text-center">
+    <p className="text-xl mb-2 text-left">
       📺 Your Mission, If You Choose to Accept:
     </p>
     <h2 className="text-2xl font-bold">

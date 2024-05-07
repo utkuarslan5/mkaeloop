@@ -9,7 +9,7 @@ const Header = () => {
   const { data: user } = useAuth();
 
   return (
-    <header className="bg-primary-800 text-white p-4">
+    <header className="bg-primary-500 text-white p-4">
       <div className="container mx-auto px-4 py-2 flex justify-between w-2/3 mx-auto">
         <HeaderLogo />
         <div className="flex items-center">
@@ -72,11 +72,11 @@ const UserProfileMenu = ({ user }) => {
   return (
     <div className="relative" ref={menuRef}>
       <div className="flex items-center cursor-pointer" onClick={toggleMenu}>
-        <img
+        {/* <img
           src={user.profileImage}
           alt="Profile"
           className="w-10 h-10 rounded-full"
-        />
+        /> */}
         <span className="ml-2">Hi, {getUsername(user)}!</span>
       </div>
       {isMenuOpen && (

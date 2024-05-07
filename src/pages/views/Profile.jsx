@@ -7,7 +7,7 @@ const ProfilePage = (props) => {
     data: user,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useQuery(getUserByUsername, {
     username: props.match.params.username,
   });
@@ -26,12 +26,12 @@ const ProfilePage = (props) => {
         <div className="col-md-4">
           <div className="card">
             <div className="card-body">
-              <img
+              {/* <img
                 src={user.profileImage || "placeholder.jpg"}
                 alt="Profile"
                 className="img-fluid rounded-circle mb-4 profile-image"
                 style={{ width: "100px", height: "100px" }}
-              />
+              /> */}
               <h1>{user.username || "Username"}</h1>
               <p>{user.bio || "Bio"}</p>
             </div>

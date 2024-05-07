@@ -1,5 +1,4 @@
-const { resolveProjectPath } = require('wasp/dev')
-const colors = require('tailwindcss/colors')
+const { resolveProjectPath } = require('wasp/dev');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -10,18 +9,32 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          50:  colors.rose[50],
-          100: colors.rose[100],
-          200: colors.rose[200],
-          300: colors.rose[300],
-          400: colors.rose[400],
-          500: colors.rose[500],
-          600: colors.rose[600],
-          700: colors.rose[700],
-          800: colors.rose[800],
-          900: colors.rose[900],
-        }
-      }
+          50: '#FFEFCB',
+          100: '#FFE8B8',
+          200: '#FFE1A5',
+          300: '#FFDA92',
+          400: '#FFD37F',
+          500: '#FFBC4A',
+          600: '#FFAC00',
+          700: '#FF9F00',
+          800: '#FF9200',
+          900: '#FF8500',
+        },
+        secondary: {
+          50: '#FFB3C6',
+          100: '#FF99AD',
+          200: '#FF8095',
+          300: '#FF667C',
+          400: '#FF4D64',
+          500: '#FF2E49', // Updated secondary color
+          600: '#FF1E33',
+          700: '#FF0B1C',
+          800: '#E80005',
+          900: '#BF0000',
+        },
+        black: '#000000',
+        white: '#FFFFFF',
+      },
     },
   },
-}
+};
