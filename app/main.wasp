@@ -51,7 +51,7 @@ app OpenSaaS {
       // },
     },
     onAuthFailedRedirectTo: "/login",
-    onAuthSucceededRedirectTo: "/home",
+    onAuthSucceededRedirectTo: "/",
   },
   db: { 
     system: PostgreSQL,
@@ -250,7 +250,7 @@ psl=}
  * https://wasp-lang.dev/docs/tutorial/pages
  */
 
-route LandingPageRoute { path: "/", to: LandingPage }
+route LandingPageRoute { path: "/landing", to: LandingPage }
 page LandingPage {
   component: import LandingPage from "@src/client/landing-page/LandingPage"
 }
@@ -286,10 +286,15 @@ page DemoAppPage {
   component: import DemoAppPage from "@src/client/app/DemoAppPage"
 }
 
-route HomePageRoute { path: "/home", to: HomePage }
+route HomePageRoute { path: "/", to: HomePage }
 page HomePage {
   authRequired: true,
   component: import HomePage from "@src/client/app/HomePage"
+}
+
+route LoopbuilderRoute { path: "/loopbuilder", to: LoopBuilder }
+page LoopBuilder {
+  component: import LandingPage from "@src/client/app/LoopBuilderPage"
 }
 
 route PricingPageRoute { path: "/pricing", to: PricingPage }

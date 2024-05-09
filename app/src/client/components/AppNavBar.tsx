@@ -14,12 +14,12 @@ import { UserMenuItems } from '../components/UserMenuItems';
 const navigation = [
   // { name: 'AI Scheduler (Demo App)', href: '/demo-app' },
   // { name: 'File Upload (AWS S3)', href: '/file-upload' },
-  { name: 'Pricing', href: '/pricing' },
-  { name: 'Documentation', href: DOCS_URL },
-  { name: 'Blog', href: BLOG_URL },
+  // { name: 'Pricing', href: '/pricing' },
+  // { name: 'Documentation', href: DOCS_URL },
+  // { name: 'Blog', href: BLOG_URL },
 ];
 
-const NavLogo = () => <img className='h-12 w-12' src={logo} alt='MkaeLoop' />;
+const NavLogo = () => <img className='h-12 w-12' src={"test"} alt='' />;
 
 export default function AppNavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,7 +30,7 @@ export default function AppNavBar() {
       <nav className='flex items-center justify-between p-6 lg:px-8' aria-label='Global'>
         <div className='flex lg:flex-1'>
           <a href='/' className='-m-1.5 p-1.5'>
-            <img className='h-16 w-16' src={logo} alt='MkaeLoop' />
+            <img className='h-16 w-16' src={"test"} alt='' />
           </a>
         </div>
         <div className='flex lg:hidden'>

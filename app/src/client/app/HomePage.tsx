@@ -5,6 +5,8 @@ import { useQuery } from "wasp/client/operations";
 import { getActiveLoops } from "wasp/client/operations";
 import { useEffect } from "react";
 
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+
 const HomePage = () => {
   const { data: loops, error, isLoading, refetch } = useQuery(getActiveLoops);
 
@@ -27,18 +29,32 @@ const HomePage = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Waiting for the loops to jump through the hoops... 🐰🔄</div>;
+    return (
+      <Flex>
+        <Box>
+          <Heading>Waiting for the loops to jump through the hoops...</Heading>
+          <Text>🐰</Text>
+        </Box>
+      </Flex>
+    );
   }
 
   if (error) {
-    return <div>Oops, the loops got tangled! 🥴🌀 {error.message}</div>;
+    return (
+      <Flex>
+        <Box>
+          <Heading>Oops, the loops got tangled!</Heading>
+          <Text>🌀 {error.message}🌀</Text>
+        </Box>
+      </Flex>
+    );
   }
 
   return (
-    <div className="p-4">
+    <Box p={4}>
       <LoopForm />
       <LoopList loops={loops} refetch={refetch} />
-    </div>
+    </Box>
   );
 };
 
