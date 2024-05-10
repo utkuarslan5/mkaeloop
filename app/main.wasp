@@ -292,9 +292,9 @@ page HomePage {
   component: import HomePage from "@src/client/app/HomePage"
 }
 
-route LoopbuilderRoute { path: "/loopbuilder", to: LoopBuilder }
-page LoopBuilder {
-  component: import LandingPage from "@src/client/app/LoopBuilderPage"
+route UIBuilderRoute { path: "/uibuilder", to: UIBuilder }
+page UIBuilder {
+  component: import UIBuilder from "@src/client/app/UIBuilderPage"
 }
 
 route PricingPageRoute { path: "/pricing", to: PricingPage }
