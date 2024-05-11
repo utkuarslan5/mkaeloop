@@ -50,8 +50,8 @@ app OpenSaaS {
       //   configFn: import { getGitHubAuthConfig } from "@src/server/auth/setUsername.js",
       // },
     },
-    onAuthFailedRedirectTo: "/login",
-    onAuthSucceededRedirectTo: "/",
+    onAuthFailedRedirectTo: "/landing",
+    onAuthSucceededRedirectTo: "/home",
   },
   db: { 
     system: PostgreSQL,
@@ -286,15 +286,15 @@ page DemoAppPage {
   component: import DemoAppPage from "@src/client/app/DemoAppPage"
 }
 
-route HomePageRoute { path: "/", to: HomePage }
+route HomePageRoute { path: "/home", to: HomePage }
 page HomePage {
   authRequired: true,
   component: import HomePage from "@src/client/app/HomePage"
 }
 
-route UIBuilderRoute { path: "/uibuilder", to: UIBuilder }
-page UIBuilder {
-  component: import UIBuilder from "@src/client/app/UIBuilderPage"
+route UIBuilderRoute { path: "/uibuilder", to: UIBuilderPage }
+page UIBuilderPage {
+  component: import UIBuilderPage from "@src/client/app/UIBuilderPage"
 }
 
 route PricingPageRoute { path: "/pricing", to: PricingPage }

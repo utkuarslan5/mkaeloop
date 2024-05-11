@@ -1,44 +1,66 @@
-import React from 'react';
-import { Card, CardBody, CardFooter, Flex, Heading, Text, Badge, Button, Stack, Progress } from '@chakra-ui/react';
+import React, { useState } from 'react';
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Flex,
+  Heading,
+  Text,
+  Badge,
+  Button,
+  Box,
+  Progress,
+  Avatar,
+  AvatarGroup,
+  useDisclosure,
+} from '@chakra-ui/react';
+import LoopDetailsCard from './LoopDetailsCard';
 
 interface LoopCardProps {
   name: string;
   description: string;
   createdBy: string;
   remainingTime: number;
-}
+  iterations: boolean[];}
 
-const LoopCard: React.FC<LoopCardProps> = ({ name, description, createdBy, remainingTime }) => {
+const LoopCard: React.FC<LoopCardProps> = ({ name, createdBy, description, remainingTime, iterations }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Card direction={{ base: 'column', sm: 'row' }} overflow='hidden' variant='outline'>
-      <Stack>
+    <>
+      <Card p={4} borderRadius='lg' onClick={onOpen}>
+        <CardHeader>
+          <Flex justifyContent='space-between' alignItems='center'>
+            <Box>
+              <Heading noOfLines={1}>{name}</Heading>
+            </Box>
+            <Avatar name={createdBy} />
+          </Flex>
+        </CardHeader>
         <CardBody>
-          <Heading size='md' color='blackAlpha.800'>
-            {name}
-          </Heading>
-          <Text py='2' color='blackAlpha.800'>
-            {description}
-          </Text>
+          <Box pb={4}>
+            <Text>{description}</Text>
+          </Box>
+          {/*
+          <Box width='80%'>
+            <Text mb={2}>Remaining time</Text>
+            <Progress value={remainingTime} size='md' colorScheme='blackAlpha' />
+          </Box>
+          */}
         </CardBody>
-        <CardFooter>
-          <Flex alignItems='center' mb={2}>
-            <Text fontWeight='bold' mr={2} color='blackAlpha.800'>
-              Created by:
-            </Text>
-            <Badge colorScheme='blackAlpha'>{createdBy}</Badge>
-          </Flex>
-          <Flex alignItems='center' mb={2}>
-            <Text fontWeight='bold' mr={2} color='blackAlpha.800'>
-              Remaining time:
-            </Text>
-            <Progress value={remainingTime} size='sm' colorScheme='blackAlpha' />
-          </Flex>
-          <Button variant='solid' colorScheme='blackAlpha'>
-            Join Loop
-          </Button>
-        </CardFooter>
-      </Stack>
-    </Card>
+      </Card>
+
+      <LoopDetailsCard
+        name={name}
+        createdBy={createdBy}
+        description={description}
+        remainingTime={remainingTime}
+        iterations={iterations}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
+    </>
   );
 };
 
