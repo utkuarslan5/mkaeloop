@@ -132,46 +132,26 @@ entity User {=psl
   contactFormMessages       ContactFormMessage[]
   tasks                     Task[]
   files                     File[]
-  // profileImage              String?
-  // bio                       String?
-  checkins                  Checkin[]
-  createdLoops              Loop[]          @relation("UserLoops")
-  watchedLoops              Loop[]          @relation("LoopWatchers")
-  participatedLoops         Loop[]          @relation("LoopParticipants")
+  loops                     Loop[]          @relation("UserLoops")
 psl=}
 
 entity Loop {=psl
   id            Int        @id @default(autoincrement())
   name          String
-  projectType   String
-  numIterations Int
-  frequency     String     // e.g., "daily", "weekly", "monthly"
   isActive      Boolean    @default(true)
-  createdById   Int
-  createdBy     User       @relation("UserLoops", fields: [createdById], references: [id])
-  watchers      User[]     @relation("LoopWatchers")
-  participants  User[]     @relation("LoopParticipants")
+  userId        Int
+  user          User       @relation("UserLoops", fields: [userId], references: [id])
   iterations    Iteration[]
 psl=}
 
 entity Iteration {=psl
-  id          Int      @id @default(autoincrement())
-  loopId      Int
-  loop        Loop     @relation(fields: [loopId], references: [id])
-  startTime   DateTime
-  endTime     DateTime
-  checkins    Checkin[]
-  completed   Boolean  @default(false)
-psl=}
-
-entity Checkin {=psl
-  id          Int       @id @default(autoincrement())
-  iterationId Int
-  iteration   Iteration @relation(fields: [iterationId], references: [id])
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  createdAt   DateTime  @default(now())
-  proofOfWork String
+  id            Int        @id @default(autoincrement())
+  loopId        Int
+  loop          Loop       @relation(fields: [loopId], references: [id])
+  startTime     DateTime
+  endTime       DateTime
+  checkins      Checkin[]
+  isComplete    Boolean    @default(false)
 psl=}
 
 entity GptResponse {=psl
@@ -392,7 +372,7 @@ action createLoop {
 }
 action deleteLoop {
   fn: import { deleteLoop } from "@src/server/actions.js",
-  entities: [Loop, Iteration, Checkin]
+  entities: [Loop, Iteration]
 }
 action deactivateLoop {
   fn: import { deactivateLoop } from "@src/server/actions.js",
@@ -423,7 +403,7 @@ action createIteration {
 }
 action createCheckin {
   fn: import { createCheckin } from "@src/server/actions.js",
-  entities: [Checkin, Iteration]
+  entities: [Iteration]
 }
 action createIterations {
   fn: import { createIterations } from "@src/server/actions.js",
@@ -505,10 +485,6 @@ query getLoopById {
 query getIterationsByLoopId {
   fn: import { getIterationsByLoopId } from "@src/server/queries.js",
   entities: [Iteration]
-}
-query getCheckinsByIterationId {
-  fn: import { getCheckinsByIterationId } from "@src/server/queries.js",
-  entities: [Checkin, User]
 }
 
 query getGptResponses {
