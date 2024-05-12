@@ -17,6 +17,7 @@ import {
   Spacer,
   Heading,
 } from '@chakra-ui/react';
+import IterationPopover from './IterationPopover';
 
 interface LoopDetailsCardProps {
   name: string;
@@ -56,17 +57,8 @@ const LoopDetailsCard: React.FC<LoopDetailsCardProps> = ({
               <Progress value={remainingTime} size='md' colorScheme='blackAlpha' />
             </Box> */}
             <Box display='flex' mt={2}> 
-              {iterations.map((iteration, index) => ( //TODO: add iteration popover here to display iteration
-                <Box
-                  key={index} 
-                  bg={iteration ? 'black' : 'white'}
-                  borderRadius='md'
-                  border='2px solid'
-                  borderColor='gray.400'
-                  w={4}
-                  h={4}
-                  mx={1}
-                />
+              {iterations.map((iteration, index) => (
+                <IterationPopover key={index} iteration={iteration} />
               ))}
             </Box>
           </VStack>
