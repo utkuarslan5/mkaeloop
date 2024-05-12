@@ -79,40 +79,6 @@ app OpenSaaS {
 /* 💽 Wasp defines DB entities via Prisma Database Models: 
  * https://wasp-lang.dev/docs/data-model/entities
  */
-//  entity User {=psl
-//   id                        Int             @id @default(autoincrement())
-//   email                     String?         @unique
-//   username                  String?         @unique
-//   createdAt                 DateTime        @default(now())
-//   lastActiveTimestamp       DateTime        @default(now())
-//   isAdmin                   Boolean         @default(false)
-//   stripeId                  String?
-//   checkoutSessionId         String?
-//   subscriptionTier          String?
-//   subscriptionStatus        String?
-//   sendEmail                 Boolean         @default(false)
-//   datePaid                  DateTime?
-//   credits                   Int             @default(3)
-//   gptResponses              GptResponse[]
-//   contactFormMessages       ContactFormMessage[]
-//   tasks                     Task[]
-//   files                     File[]
-//   profile                   Profile?        @relation(fields: [profileId], references: [id])
-//   profileId                 Int?            @unique
-// psl=}
-
-// entity Profile {=psl
-//   id                        Int             @id @default(autoincrement())
-//   bio                       String?
-//   profileImage              String?
-//   user                      User?           @relation(fields: [userId], references: [id])
-//   userId                    Int             @unique
-//   username                  String?         @default(relation: user.username)
-//   checkins                  Checkin[]
-//   createdLoops              Loop[]          @relation("UserLoops")
-//   watchedLoops              Loop[]          @relation("LoopWatchers")
-//   participatedLoops         Loop[]          @relation("LoopParticipants")
-// psl=}
 
 entity User {=psl
   id                        Int             @id @default(autoincrement())
@@ -136,12 +102,14 @@ entity User {=psl
 psl=}
 
 entity Loop {=psl
-  id            Int        @id @default(autoincrement())
-  name          String
-  isActive      Boolean    @default(true)
-  userId        Int
-  user          User       @relation("UserLoops", fields: [userId], references: [id])
-  iterations    Iteration[]
+  id                        Int             @id @default(autoincrement())
+  name                      String
+  description               String?
+  accountabilityPartner     String
+  isActive                  Boolean         @default(true)
+  userId                    Int
+  user                      User            @relation("UserLoops", fields: [userId], references: [id])
+  iterations                Iteration[]
 psl=}
 
 entity Iteration {=psl
@@ -150,7 +118,7 @@ entity Iteration {=psl
   loop          Loop       @relation(fields: [loopId], references: [id])
   startTime     DateTime
   endTime       DateTime
-  checkins      Checkin[]
+  checkin       String
   isComplete    Boolean    @default(false)
 psl=}
 
@@ -266,15 +234,9 @@ page DemoAppPage {
   component: import DemoAppPage from "@src/client/app/DemoAppPage"
 }
 
-route HomePageRoute { path: "/home", to: HomePage }
+route HomeRoute { path: "/home", to: HomePage }
 page HomePage {
-  authRequired: true,
   component: import HomePage from "@src/client/app/HomePage"
-}
-
-route UIBuilderRoute { path: "/uibuilder", to: UIBuilderPage }
-page UIBuilderPage {
-  component: import UIBuilderPage from "@src/client/app/UIBuilderPage"
 }
 
 route PricingPageRoute { path: "/pricing", to: PricingPage }
@@ -368,46 +330,7 @@ page AdminUIButtonsPage {
 
 action createLoop {
   fn: import { createLoop } from "@src/server/actions.js",
-  entities: [Loop]
-}
-action deleteLoop {
-  fn: import { deleteLoop } from "@src/server/actions.js",
-  entities: [Loop, Iteration]
-}
-action deactivateLoop {
-  fn: import { deactivateLoop } from "@src/server/actions.js",
-  entities: [Loop]
-}
-action joinLoop {
-  fn: import { joinLoop } from "@src/server/actions.js",
-  entities: [Loop]
-}
-
-action watchLoop {
-  fn: import { watchLoop } from "@src/server/actions.js",
-  entities: [Loop]  
-}
-
-action leaveLoop {
-  fn: import { leaveLoop } from "@src/server/actions.js", 
-  entities: [Loop]
-}
-
-action unwatchLoop {
-  fn: import { unwatchLoop } from "@src/server/actions.js",
-  entities: [Loop]
-}
-action createIteration {
-  fn: import { createIteration } from "@src/server/actions.js",
-  entities: [Iteration, Loop]
-}
-action createCheckin {
-  fn: import { createCheckin } from "@src/server/actions.js",
-  entities: [Iteration]
-}
-action createIterations {
-  fn: import { createIterations } from "@src/server/actions.js",
-  entities: [Iteration, Loop]
+  entities: [User, Loop]
 }
 
 action generateGptResponse {
@@ -452,40 +375,6 @@ action createFile {
 
 
 // 📚 Queries
-
-query getUser {
-  fn: import { getUser } from "@src/server/queries.js",
-  entities: [User]
-}
-query getUserByUsername {
-  fn: import { getUserByUsername } from "@src/server/queries.js",
-  entities: [User]
-}
-
-query getLoops {
-  fn: import { getLoops } from "@src/server/queries.js",
-  entities: [Loop]
-}
-query getActiveLoops {
-  fn: import { getActiveLoops } from "@src/server/queries.js",
-  entities: [Loop]
-}
-query getLoopParticipants {
-  fn: import { getLoopParticipants } from "@src/server/queries.js",
-  entities: [User, Loop]
-}
-query getLoopWatchers {
-  fn: import { getLoopWatchers } from "@src/server/queries.js",
-  entities: [User, Loop]
-}
-query getLoopById {
-  fn: import { getLoopById } from "@src/server/queries.js",
-  entities: [Loop]
-}
-query getIterationsByLoopId {
-  fn: import { getIterationsByLoopId } from "@src/server/queries.js",
-  entities: [Iteration]
-}
 
 query getGptResponses {
   fn: import { getGptResponses } from "@src/server/queries.js",

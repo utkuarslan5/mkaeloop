@@ -17,11 +17,6 @@ import {
   FormLabel,
   Input,
   Textarea,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -30,14 +25,15 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
-
+import { createLoop } from 'wasp/client/operations';
 interface LoopFormProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
 const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
-  const [userEntries, setUserEntries] = useState(['', '', '', '']);
+  const [userEntries, setUserEntries] = useState(['', '', '']);
+
   const [shareUrl, setShareUrl] = useState('');
   const steps = [
     {
@@ -57,21 +53,8 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
       description: '',
       form: (
         <FormControl>
-          <FormLabel>How many weeks will it take?</FormLabel>
-          <NumberInput>
-            <NumberInputField
-              onChange={(e) => setUserEntries([userEntries[0], userEntries[1], e.target.value, userEntries[3]])}
-            />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
           <FormLabel>Who will be your accountability partner?</FormLabel>
-          <Input
-            type='text'
-            onChange={(e) => setUserEntries([userEntries[0], userEntries[1], userEntries[2], e.target.value])}
-          />
+          <Input type='text' onChange={(e) => setUserEntries([userEntries[0], userEntries[1], e.target.value])} />
         </FormControl>
       ),
     },
@@ -83,8 +66,7 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
           <Heading size='md'>{userEntries[0]}</Heading>
           <Box mt={2}>
             <Text>What will it do/look-like in the end: {userEntries[1]}</Text>
-            <Text>How many weeks will it take: {userEntries[2]}</Text>
-            <Text>Who will be your accountability partner: {userEntries[3]}</Text>
+            <Text>Who will be your accountability partner: {userEntries[2]}</Text>
           </Box>
         </Box>
       ),
@@ -120,6 +102,21 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
   const max = steps.length - 1;
   const progressPercent = (activeStep / max) * 100;
 
+  const handleConfirm = async () => {
+    try {
+      const loopData = {
+        name: userEntries[0],
+        description: userEntries[1],
+        accountabilityPartner: userEntries[2],
+      };
+      await createLoop(loopData);
+      setActiveStep(activeStep + 1);
+      setUserEntries(['', '', '']); // Reset form after confirmation
+    } catch (error) {
+      console.error('Error creating loop:', error);
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size={['xs', 'md', 'xl']}>
       <ModalOverlay />
@@ -151,9 +148,7 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
                 Previous
               </Button>
             )}
-            {activeStep === steps.length - 2 && (
-              <Button onClick={() => setActiveStep(activeStep + 1)}>Confirm</Button>
-            )}
+            {activeStep === steps.length - 2 && <Button onClick={handleConfirm}>Confirm</Button>}
             {activeStep !== steps.length - 1 && activeStep !== steps.length - 2 && (
               <Button onClick={() => setActiveStep(activeStep + 1)} isDisabled={activeStep === max}>
                 Next

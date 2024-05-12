@@ -1,59 +1,57 @@
-import { useAuth } from "wasp/client/auth";
-import LoopForm from "../components/loopform/LoopForm";
-import LoopList from "../components/looplist/LoopList";
-import { useQuery } from "wasp/client/operations";
-import { getActiveLoops } from "wasp/client/operations";
-import { useEffect } from "react";
+import React from 'react';
+import { Box } from '@chakra-ui/react';
+import LoopGrid from '../components/LoopGrid';
 
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-
-const HomePage = () => {
-  const { data: loops, error, isLoading, refetch } = useQuery(getActiveLoops);
-
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.async = true;
-    script.innerHTML = `
-      window.$sleek=[];
-      window.SLEEK_PRODUCT_ID=291162644;
-      (function(){
-        d=document;
-        s=d.createElement("script");
-        s.src="https://client.sleekplan.com/sdk/e.js";
-        s.async=1;
-        d.getElementsByTagName("head")[0].appendChild(s);
-      })();
-    `;
-    document.head.appendChild(script);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <Flex>
-        <Box>
-          <Heading>Waiting for the loops to jump through the hoops...</Heading>
-          <Text>🐰</Text>
-        </Box>
-      </Flex>
-    );
-  }
-
-  if (error) {
-    return (
-      <Flex>
-        <Box>
-          <Heading>Oops, the loops got tangled!</Heading>
-          <Text>🌀 {error.message}🌀</Text>
-        </Box>
-      </Flex>
-    );
-  }
+const HomePage: React.FC = () => {
+  const loops = [
+    {
+      id: 1,
+      name: 'Loop 1 Lorem Ipsum',
+      description:
+        'This is the first loop. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.',
+      createdBy: 'John Doe',
+      remainingTime: 20,
+      iterations: [true, false, true, true, false],
+    },
+    {
+      id: 2,
+      name: 'Loop 2 Lorem Ipsum',
+      description: 'This is the second loop. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      createdBy: 'Jane Smith',
+      remainingTime: 30,
+      iterations: [false, true, false, true, true],
+    },
+    {
+      id: 3,
+      name: 'Loop 3 Lorem Ipsum',
+      description:
+        'This is the third loop. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl. Sed euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.',
+      createdBy: 'Bob Johnson',
+      remainingTime: 15,
+      iterations: [true, true, false, false, true],
+    },
+    {
+      id: 4,
+      name: 'Loop 4 Lorem Ipsum',
+      description: 'This is the fourth loop. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      createdBy: 'Alice Williams',
+      remainingTime: 25,
+      iterations: [false, true, true, false, true],
+    },
+    {
+      id: 5,
+      name: 'Loop 5 Lorem Ipsum',
+      description:
+        'This is the fifth loop. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.',
+      createdBy: 'Tom Davis',
+      remainingTime: 18,
+      iterations: [true, false, false, true, false],
+    },
+  ];
 
   return (
-    <Box p={4}>
-      <LoopForm />
-      <LoopList loops={loops} refetch={refetch} />
+    <Box>
+      <LoopGrid loops={loops} />
     </Box>
   );
 };
