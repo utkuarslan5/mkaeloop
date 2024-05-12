@@ -40,7 +40,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ name, createdBy, description, remai
         </CardHeader>
         <CardBody>
           <Box pb={4}>
-            <Text>{description}</Text>
+            <Text noOfLines={3}>{description} </Text>
           </Box>
           {/*
           <Box width='80%'>

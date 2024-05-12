@@ -1,10 +1,13 @@
 // LoopGrid.tsx
 import { Box, SimpleGrid, GridItem, Stack, Button, Stat, StatLabel, StatNumber, StatHelpText } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
-import React, { useEffect, useState } from 'react';
+import { AddIcon, CheckIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import React, { useEffect, useState, useRef } from 'react';
 import LoopCard from './LoopCard';
+import LoopForm from './LoopForm';
+import CheckinForm from './CheckinForm';
 
-interface LoopData {
+interface Loops {
+  id: number;
   name: string;
   description: string;
   createdBy: string;
@@ -12,23 +15,44 @@ interface LoopData {
   iterations: boolean[];
 }
 
-interface LoopGridProps {
-  loopData: LoopData[];
+export interface LoopGridProps {
+  loops: Loops[];
 }
 
-const LoopGrid: React.FC<LoopGridProps> = ({ loopData }) => {
+const LoopGrid: React.FC<LoopGridProps> = ({ loops }) => {
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
+  const [isLoopFormOpen, setIsLoopFormOpen] = useState(false);
+  const [isCheckinFormOpen, setIsCheckinFormOpen] = useState(false);
+  const oneMinute = 60000;
+  const checkinFormRef = useRef<typeof CheckinForm>(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setRemainingTime(getRemainingTime());
-    }, 60000); // Update every minute (60000 milliseconds)
+    }, oneMinute);
 
     return () => clearInterval(interval);
   }, []);
 
   const formattedTime = formatTime(remainingTime);
   const weekRange = getWeekRange();
+
+  const handleCreateClick = () => {
+    setIsLoopFormOpen(true);
+  };
+
+  const handleLoopFormClose = () => {
+    setIsLoopFormOpen(false);
+  };
+
+  const handleCheckinClick = () => {
+    setIsCheckinFormOpen(true);
+  };
+
+  const handleCheckinFormClose = () => {
+    setIsCheckinFormOpen(false);
+  };
+
 
   return (
     <Box>
@@ -38,12 +62,14 @@ const LoopGrid: React.FC<LoopGridProps> = ({ loopData }) => {
           <StatNumber>{formattedTime}</StatNumber>
           <StatHelpText>{weekRange}</StatHelpText>
         </Stat>
-        <Button leftIcon={<AddIcon />}  variant='solid'>
+        <Button leftIcon={<CheckIcon />} variant='solid' onClick={handleCheckinClick}>
+          Check-in
+        </Button>
+        <Button leftIcon={<AddIcon />} variant='solid' onClick={handleCreateClick}>
           Create
         </Button>
       </Stack>
-      <SimpleGrid minChildWidth='300px' spacing={6}>
-        {loopData.map((loop, index) => (
+      <SimpleGrid minChildWidth='300px' spacing={4}>        {loops.map((loop, index) => (
           <GridItem key={index}>
             <LoopCard
               name={loop.name}
@@ -55,6 +81,12 @@ const LoopGrid: React.FC<LoopGridProps> = ({ loopData }) => {
           </GridItem>
         ))}
       </SimpleGrid>
+      <LoopForm isOpen={isLoopFormOpen} onClose={handleLoopFormClose} />
+      <CheckinForm
+        isOpen={isCheckinFormOpen}
+        onClose={handleCheckinFormClose}
+        loops={loops.map((loop) => ({ id: loop.id, name: loop.name }))}
+      />
     </Box>
   );
 };

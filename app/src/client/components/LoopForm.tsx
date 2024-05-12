@@ -22,9 +22,21 @@ import {
   NumberInputStepper,
   NumberIncrementStepper,
   NumberDecrementStepper,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from '@chakra-ui/react';
 
-const LoopBuilder = () => {
+interface LoopFormProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
   const [userEntries, setUserEntries] = useState(['', '', '', '']);
   const [shareUrl, setShareUrl] = useState('');
   const steps = [
@@ -85,9 +97,10 @@ const LoopBuilder = () => {
           <Heading size='md'>Share your loop</Heading>
           <Text mt={2}>Copy and share this URL with your friends and accountability partner:</Text>
           <Input value={shareUrl} isReadOnly mt={2} />
-          <Flex mt={4} justify='center' align='center'>
+          {/* Add share functionality here */}
+          {/* <Flex mt={4} justify='center' align='center'>
             <Button onClick={() => (window.location.href = '/dashboard')}>Go to Dashboard</Button>
-          </Flex>
+          </Flex> */}
         </Box>
       ),
     },
@@ -108,39 +121,49 @@ const LoopBuilder = () => {
   const progressPercent = (activeStep / max) * 100;
 
   return (
-    <Flex height='100vh' alignItems='center' justifyContent='center'>
-      <Box maxW='md' mx='auto'>
-        <Box position='relative'>
-          <Stepper size='sm' index={activeStep} gap='0'>
-            {steps.map((step, index) => (
-              <Step key={index}>
-                <StepIndicator bg='white'>
-                  <StepStatus complete={<StepIcon />} />
-                </StepIndicator>
-              </Step>
-            ))}
-          </Stepper>
-          <Progress value={progressPercent} position='absolute' height='3px' width='full' top='10px' zIndex={-1} />
-        </Box>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered size={['xs', 'md', 'xl']}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Loop Form</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <Box position='relative'>
+            <Stepper size='sm' index={activeStep} gap='0'>
+              {steps.map((step, index) => (
+                <Step key={index}>
+                  <StepIndicator bg='white'>
+                    <StepStatus complete={<StepIcon />} />
+                  </StepIndicator>
+                </Step>
+              ))}
+            </Stepper>
+            <Progress value={progressPercent} position='absolute' height='3px' width='full' top='10px' zIndex={-1} />
+          </Box>
 
-        <Box mt={6}>{activeStepText}</Box>
-        <Box mt={6}>{activeStepForm}</Box>
-        <Flex mt={6} justify='flex-end' gap={4}>
-          {activeStep !== steps.length - 1 && (
-            <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
-              Previous
-            </Button>
-          )}
-          {activeStep === steps.length - 2 && <Button onClick={() => setActiveStep(activeStep + 1)}>Confirm</Button>}
-          {activeStep !== steps.length - 1 && activeStep !== steps.length - 2 && (
-            <Button onClick={() => setActiveStep(activeStep + 1)} isDisabled={activeStep === max}>
-              Next
-            </Button>
-          )}
-        </Flex>
-      </Box>
-    </Flex>
+          <Box mt={6}>{activeStepText}</Box>
+          <Box mt={6}>{activeStepForm}</Box>
+        </ModalBody>
+
+        <ModalFooter>
+          <Flex justify='flex-end' gap={4}>
+            {activeStep !== steps.length - 1 && (
+              <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
+                Previous
+              </Button>
+            )}
+            {activeStep === steps.length - 2 && (
+              <Button onClick={() => setActiveStep(activeStep + 1)}>Confirm</Button>
+            )}
+            {activeStep !== steps.length - 1 && activeStep !== steps.length - 2 && (
+              <Button onClick={() => setActiveStep(activeStep + 1)} isDisabled={activeStep === max}>
+                Next
+              </Button>
+            )}
+          </Flex>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 
-export default LoopBuilder;
+export default LoopForm;
