@@ -19,6 +19,7 @@ import {
 } from '@chakra-ui/react';
 import IterationPopover from './IterationPopover';
 import { type Loop, type User } from 'wasp/entities';
+import { useQuery, getIterations } from 'wasp/client/operations';
 
 interface LoopDetailsCardProps {
   loop: Loop;
@@ -28,6 +29,8 @@ interface LoopDetailsCardProps {
 }
 
 const LoopDetailsCard: React.FC<LoopDetailsCardProps> = ({ loop, isOpen, onClose, username }) => {
+  const { data: iterations } = useQuery(getIterations, { loopId: loop.id });
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size={['xs', 'sm', 'md', 'lg', 'xl']}>
       <ModalOverlay />
@@ -42,7 +45,9 @@ const LoopDetailsCard: React.FC<LoopDetailsCardProps> = ({ loop, isOpen, onClose
         <ModalBody>
           <VStack align='stretch' spacing={6}>
             <Text>{loop.description}</Text>
-            <Text>Username: {username}</Text>
+            <HStack>
+              {iterations?.map((iteration, index) => <IterationPopover key={iteration.id} {...iteration} />)}
+            </HStack>
           </VStack>
         </ModalBody>
         <ModalFooter>{/*add footer button here*/}</ModalFooter>

@@ -45,14 +45,14 @@ const LoopGrid: React.FC<{ loops: Loop[] }> = ({ loops }) => {
     <Box>
       <Stack direction={['column', 'row']} spacing='24px' justify='space-between' mb={4} py={4} px={6}>
         <Stat>
-          <StatLabel>Time Remaining</StatLabel>
+          <StatLabel>Remaining time</StatLabel>
           <StatNumber>{formattedTime}</StatNumber>
           <StatHelpText>{weekRange}</StatHelpText>
         </Stat>
         <Button leftIcon={<CheckIcon />} variant='solid' onClick={handleCheckinClick}>
           Check-in
         </Button>
-        <Button leftIcon={<AddIcon />} variant='solid' onClick={handleCreateClick}>
+        <Button leftIcon={<AddIcon />} variant='outline' onClick={handleCreateClick}>
           Create
         </Button>
       </Stack>
@@ -65,11 +65,7 @@ const LoopGrid: React.FC<{ loops: Loop[] }> = ({ loops }) => {
         ))}
       </SimpleGrid>
       <LoopForm isOpen={isLoopFormOpen} onClose={handleLoopFormClose} />
-      <CheckinForm
-        isOpen={isCheckinFormOpen}
-        onClose={handleCheckinFormClose}
-        loops={loops.map((loop) => ({ id: loop.id, name: loop.name }))}
-      />
+      <CheckinForm isOpen={isCheckinFormOpen} onClose={handleCheckinFormClose} loops={loops} />
     </Box>
   );
 };

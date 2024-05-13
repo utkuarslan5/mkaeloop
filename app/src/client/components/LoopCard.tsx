@@ -16,7 +16,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import LoopDetailsCard from './LoopDetailsCard';
-import { type Loop, type User } from 'wasp/entities';
+import { type Loop} from 'wasp/entities';
 import { useQuery, getUsernameFromLoopID } from 'wasp/client/operations';
 
 const LoopCard: React.FC<{ loop: Loop }> = ({ loop }) => {

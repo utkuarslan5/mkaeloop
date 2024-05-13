@@ -9,36 +9,41 @@ import {
   PopoverCloseButton,
   Box,
 } from '@chakra-ui/react';
+import { type Iteration } from 'wasp/entities';
 
-interface IterationPopoverProps {
-  iteration: boolean
-}
-
-const IterationPopover: React.FC<IterationPopoverProps> = ({ iteration }) => {
+const IterationPopover: React.FC<Iteration> = (iteration) => {
+  const weeksAgo = getWeeksAgo(new Date(iteration.endTime), new Date());
 
   return (
-    <Popover>
+    <Popover placement='bottom'>
       <PopoverTrigger>
         <Box
-          bg={iteration ? 'green.500' : 'gray.400'}
-          borderRadius="md"
-          border="2px solid"
-          borderColor="gray.400"
+          bg={iteration.isComplete ? 'green.500' : 'red.400'}
+          borderRadius='md'
+          border='2px solid'
+          borderColor='gray.400'
           w={4}
           h={4}
           mx={1}
         />
       </PopoverTrigger>
-      <PopoverContent>
-        <PopoverArrow />
-        <PopoverCloseButton />
-        <PopoverHeader>Iteration Details</PopoverHeader>
-        <PopoverBody>
-          <p>Completed: {iteration ? 'Yes' : 'No'}</p>
+      <PopoverContent maxW='md'>
+        <PopoverHeader >
+          {!iteration.isComplete && weeksAgo <= 0 ? `Active` : `${weeksAgo} weeks ago`}
+        </PopoverHeader>
+        <PopoverBody >
+          <p>{iteration.checkin}</p>
         </PopoverBody>
       </PopoverContent>
     </Popover>
   );
+};
+
+const getWeeksAgo = (startTime: Date, endTime: Date) => {
+  const oneWeek = 604800000; // milliseconds in a week
+  const diffTime =  startTime.getTime() - endTime.getTime();
+  const diffWeeks = Math.ceil(diffTime / oneWeek);
+  return diffWeeks;
 };
 
 export default IterationPopover;

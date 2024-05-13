@@ -14,8 +14,8 @@ export default function App({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { data: user } = useAuth();
 
-  const shouldDisplayAppNavBar = useMemo(() => {
-    return location.pathname !== '/' && location.pathname !== '/login' && location.pathname !== '/signup';
+  const shouldDisplayAppNavBar = useMemo(() => { //location.pathname !== '/' &&
+    return  location.pathname !== '/login' && location.pathname !== '/signup';
   }, [location]);
 
   const isAdminDashboard = useMemo(() => {

@@ -28,8 +28,8 @@ app OpenSaaS {
     methods: {
       email: {
         fromField: {
-          name: "Open SaaS App",
-          email: "me@example.com" 
+          name: "MkaeLoop",
+          email: "utkuvonarslan@gmail.com" 
         },
         emailVerification: {
           clientRoute: EmailVerificationRoute,
@@ -70,11 +70,11 @@ app OpenSaaS {
     // Note that the "Dummy" provider is just for local development purposes. 
     // Make sure to check the server logs for the confirmation email token (it will not be sent to an address)!
     // Please use SendGrid in production. See: https://docs.opensaas.sh/guides/email-sending/
-    provider: Dummy, 
+    provider: Mailgun, 
     defaultFrom: {
-      name: "Open SaaS App",
+      name: "WNAI",
       // When using SendGrid, you must use the same email address that you configured your account to send out emails with!
-      email: "me@example.com" 
+      email: "utkuvonarslan@gmail.com" 
     },
   },
 }
@@ -237,7 +237,7 @@ page DemoAppPage {
   component: import DemoAppPage from "@src/client/app/DemoAppPage"
 }
 
-route HomeRoute { path: "/home", to: HomePage }
+route HomeRoute { path: "/", to: HomePage }
 page HomePage {
   component: import HomePage from "@src/client/app/HomePage"
 }
@@ -336,6 +336,11 @@ action createLoop {
   entities: [User, Loop]
 }
 
+action addCheckin {
+  fn: import { addCheckin } from "@src/server/actions.js",
+  entities: [User, Loop]
+}
+
 action generateGptResponse {
   fn: import { generateGptResponse } from "@src/server/actions.js",
   entities: [User, Task, GptResponse]
@@ -393,6 +398,10 @@ query getUsernameFromLoopID {
   entities: [User]
 }
 
+query getIterations {
+  fn: import { getIterations } from "@src/server/queries.js",
+  entities: [Iteration]
+}
 
 query getGptResponses {
   fn: import { getGptResponses } from "@src/server/queries.js",

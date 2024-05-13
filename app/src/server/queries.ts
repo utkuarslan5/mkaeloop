@@ -19,6 +19,7 @@ import {
   type GetLoops,
   type GetActiveLoops,
   type GetUsernameFromLoopID,
+  type GetIterations,
 } from 'wasp/server/operations';
 import { getDownloadFileSignedURLFromS3 } from './file-upload/s3Utils.js';
 import { type SubscriptionStatusOptions } from '../shared/types.js';
@@ -55,6 +56,18 @@ export const getUsernameFromLoopID: GetUsernameFromLoopID<{ id: number }, string
   return user?.username ?? null;
 };
 
+export const getIterations: GetIterations<{ loopId: number }, Iteration[]> = async ({ loopId }, context) => {
+  return context.entities.Iteration.findMany({
+    where: {
+      loop: {
+        id: loopId,
+      },
+    },
+    orderBy: {
+      endTime: 'desc',
+    },
+  });
+};
 
 type DailyStatsWithSources = DailyStats & {
   sources: PageViewSource[];

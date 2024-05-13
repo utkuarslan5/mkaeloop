@@ -25,16 +25,31 @@ import {
   ModalBody,
   ModalCloseButton,
 } from '@chakra-ui/react';
+import { useAuth } from 'wasp/client/auth';
+import { type Loop } from 'wasp/entities';
+import { addCheckin } from 'wasp/client/operations';
 
 interface CheckinFormProps {
   isOpen: boolean;
   onClose: () => void;
-  loops: { id: number; name: string }[];
+  loops: Loop[];
 }
 
-const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops}) => {
-  const [selectedLoop, setSelectedLoop] = useState('');
+const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops }) => {
+  const [selectedLoop, setSelectedLoop] = useState<Loop | null>(null);
   const [weeklyWork, setWeeklyWork] = useState('');
+  const { data: user } = useAuth();
+
+  const userLoops = loops.filter((loop) => {
+    return loop.userId === user?.id;
+  });
+
+  const handleLoopSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedLoopName = e.target.value;
+    const loop = userLoops.find((loop) => loop.name === selectedLoopName);
+    setSelectedLoop(loop || null);
+    console.log('Selected loop:', loop);
+  };
 
   const steps = [
     {
@@ -43,9 +58,9 @@ const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops}) => {
       form: (
         <FormControl>
           <FormLabel>Select a loop to check in</FormLabel>
-          <Select placeholder='Select a loop' onChange={(e) => setSelectedLoop(e.target.value)}>
-            {loops.map((loop) => (
-              <option key={loop.id} value={loop.id}>
+          <Select placeholder='Select a loop' value={selectedLoop?.name || ''} onChange={handleLoopSelect}>
+            {userLoops.map((loop) => (
+              <option key={loop.id} value={loop.name}>
                 {loop.name}
               </option>
             ))}
@@ -59,17 +74,17 @@ const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops}) => {
       form: (
         <FormControl>
           <FormLabel>What did you work on this week?</FormLabel>
-          <Textarea onChange={(e) => setWeeklyWork(e.target.value)} />
+          <Textarea value={weeklyWork} onChange={(e) => setWeeklyWork(e.target.value)} />
         </FormControl>
       ),
     },
     {
-      title: 'Hurray!',
+      title: 'Confirm Check-in',
       description: '',
       form: (
         <Box>
-          <Heading size='md'>Congratulations!</Heading>
-          <Text mt={2}>You have successfully checked in for the week.</Text>
+          <FormLabel>{selectedLoop?.name}</FormLabel>
+          <Text>{weeklyWork}</Text>
         </Box>
       ),
     },
@@ -80,8 +95,14 @@ const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops}) => {
     count: steps.length,
   });
 
-  const resetForm = () => {
-    setSelectedLoop('');
+  const submitForm = () => {
+    if (selectedLoop && weeklyWork) {
+      addCheckin({
+        loopId: selectedLoop.id,
+        checkin: weeklyWork,
+      });
+    }
+    setSelectedLoop(null);
     setWeeklyWork('');
     setActiveStep(0);
   };
@@ -117,21 +138,19 @@ const CheckinForm: React.FC<CheckinFormProps> = ({ isOpen, onClose, loops}) => {
 
         <ModalFooter>
           <Flex justify='flex-end' gap={4}>
-            {activeStep !== steps.length - 1 && (
-              <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
-                Previous
-              </Button>
-            )}
-            {activeStep !== steps.length - 1 && (
+            <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
+              Previous
+            </Button>
+            {activeStep !== max && (
               <Button onClick={() => setActiveStep(activeStep + 1)} isDisabled={activeStep === max}>
                 Next
               </Button>
             )}
-            {activeStep === steps.length - 1 && (
+            {activeStep === max && (
               <Button
                 onClick={() => {
+                  submitForm();
                   onClose();
-                  resetForm();
                 }}
               >
                 Submit
