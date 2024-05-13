@@ -51,11 +51,14 @@ app OpenSaaS {
       // },
     },
     onAuthFailedRedirectTo: "/landing",
-    onAuthSucceededRedirectTo: "/home",
+    onAuthSucceededRedirectTo: "/",
   },
   db: { 
     system: PostgreSQL,
     seeds: [
+      import { deleteAll } from "@src/server/scripts/resetSeed.js",
+      import { resetSequences } from "@src/server/scripts/resetSeed.js",
+      import { resetAll } from "@src/server/scripts/resetSeed.js",
       import { devSeedUsers } from "@src/server/scripts/usersSeed.js",
     ]
   },
@@ -375,6 +378,21 @@ action createFile {
 
 
 // 📚 Queries
+
+query getLoops {
+  fn: import { getLoops } from "@src/server/queries.js",
+  entities: [Loop]
+}
+
+query getActiveLoops {
+  fn: import { getActiveLoops } from "@src/server/queries.js",
+  entities: [Loop, User]
+}
+query getUsernameFromLoopID {
+  fn: import { getUsernameFromLoopID } from "@src/server/queries.js",
+  entities: [User]
+}
+
 
 query getGptResponses {
   fn: import { getGptResponses } from "@src/server/queries.js",

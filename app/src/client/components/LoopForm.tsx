@@ -34,7 +34,6 @@ interface LoopFormProps {
 const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
   const [userEntries, setUserEntries] = useState(['', '', '']);
 
-  const [shareUrl, setShareUrl] = useState('');
   const steps = [
     {
       title: 'First',
@@ -42,9 +41,9 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
       form: (
         <FormControl>
           <FormLabel>What will you make</FormLabel>
-          <Input type='text' onChange={(e) => setUserEntries([e.target.value, ...userEntries.slice(1)])} />
+          <Input type='text' value={userEntries[0]} onChange={(e) => setUserEntries([e.target.value, userEntries[1], userEntries[2]])} />
           <FormLabel>What will it do/look-like in the end?</FormLabel>
-          <Textarea onChange={(e) => setUserEntries([userEntries[0], e.target.value, ...userEntries.slice(2)])} />
+          <Textarea value={userEntries[1]} onChange={(e) => setUserEntries([userEntries[0], e.target.value, userEntries[2]])} />
         </FormControl>
       ),
     },
@@ -54,7 +53,7 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
       form: (
         <FormControl>
           <FormLabel>Who will be your accountability partner?</FormLabel>
-          <Input type='text' onChange={(e) => setUserEntries([userEntries[0], userEntries[1], e.target.value])} />
+          <Input type='text' value={userEntries[2]} onChange={(e) => setUserEntries([userEntries[0], userEntries[1], e.target.value])} />
         </FormControl>
       ),
     },
@@ -71,27 +70,8 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
         </Box>
       ),
     },
-    {
-      title: 'Share',
-      description: '',
-      form: (
-        <Box position='relative' height='100%'>
-          <Heading size='md'>Share your loop</Heading>
-          <Text mt={2}>Copy and share this URL with your friends and accountability partner:</Text>
-          <Input value={shareUrl} isReadOnly mt={2} />
-          {/* Add share functionality here */}
-          {/* <Flex mt={4} justify='center' align='center'>
-            <Button onClick={() => (window.location.href = '/dashboard')}>Go to Dashboard</Button>
-          </Flex> */}
-        </Box>
-      ),
-    },
   ];
 
-  const generateShareUrl = () => {
-    const dummyUrl = 'https://example.com/share/loop';
-    setShareUrl(dummyUrl);
-  };
   const { activeStep, setActiveStep } = useSteps({
     index: 0,
     count: steps.length,
@@ -110,8 +90,9 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
         accountabilityPartner: userEntries[2],
       };
       await createLoop(loopData);
-      setActiveStep(activeStep + 1);
-      setUserEntries(['', '', '']); // Reset form after confirmation
+      setActiveStep(0);
+      setUserEntries(['', '', '']); 
+      onClose()
     } catch (error) {
       console.error('Error creating loop:', error);
     }
@@ -143,17 +124,15 @@ const LoopForm: React.FC<LoopFormProps> = ({ isOpen, onClose }) => {
 
         <ModalFooter>
           <Flex justify='flex-end' gap={4}>
-            {activeStep !== steps.length - 1 && (
-              <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
-                Previous
-              </Button>
-            )}
-            {activeStep === steps.length - 2 && <Button onClick={handleConfirm}>Confirm</Button>}
-            {activeStep !== steps.length - 1 && activeStep !== steps.length - 2 && (
+            <Button onClick={() => setActiveStep(activeStep - 1)} isDisabled={activeStep === 0}>
+              Previous
+            </Button>
+            {activeStep !== max && (
               <Button onClick={() => setActiveStep(activeStep + 1)} isDisabled={activeStep === max}>
                 Next
               </Button>
             )}
+            {activeStep === max && <Button onClick={handleConfirm}>Confirm</Button>}
           </Flex>
         </ModalFooter>
       </ModalContent>

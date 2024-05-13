@@ -16,16 +16,12 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import LoopDetailsCard from './LoopDetailsCard';
+import { type Loop, type User } from 'wasp/entities';
+import { useQuery, getUsernameFromLoopID } from 'wasp/client/operations';
 
-interface LoopCardProps {
-  name: string;
-  description: string;
-  createdBy: string;
-  remainingTime: number;
-  iterations: boolean[];}
-
-const LoopCard: React.FC<LoopCardProps> = ({ name, createdBy, description, remainingTime, iterations }) => {
+const LoopCard: React.FC<{ loop: Loop }> = ({ loop }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: username, isLoading: isLoadingUser } = useQuery(getUsernameFromLoopID, { id: loop.userId });
 
   return (
     <>
@@ -33,14 +29,14 @@ const LoopCard: React.FC<LoopCardProps> = ({ name, createdBy, description, remai
         <CardHeader>
           <Flex justifyContent='space-between' alignItems='center'>
             <Box>
-              <Heading noOfLines={1}>{name}</Heading>
+              <Heading noOfLines={1}>{loop.name}</Heading>
             </Box>
-            <Avatar name={createdBy} />
+            <Avatar name={username || undefined} />
           </Flex>
         </CardHeader>
         <CardBody>
           <Box pb={4}>
-            <Text noOfLines={3}>{description} </Text>
+            <Text noOfLines={3}>{loop.description} </Text>
           </Box>
           {/*
           <Box width='80%'>
@@ -51,15 +47,7 @@ const LoopCard: React.FC<LoopCardProps> = ({ name, createdBy, description, remai
         </CardBody>
       </Card>
 
-      <LoopDetailsCard
-        name={name}
-        createdBy={createdBy}
-        description={description}
-        remainingTime={remainingTime}
-        iterations={iterations}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
+      <LoopDetailsCard loop={loop} isOpen={isOpen} onClose={onClose} username={username} />
     </>
   );
 };

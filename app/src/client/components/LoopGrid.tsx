@@ -5,21 +5,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import LoopCard from './LoopCard';
 import LoopForm from './LoopForm';
 import CheckinForm from './CheckinForm';
+import { type Loop } from 'wasp/entities';
 
-interface Loops {
-  id: number;
-  name: string;
-  description: string;
-  createdBy: string;
-  remainingTime: number;
-  iterations: boolean[];
-}
-
-export interface LoopGridProps {
-  loops: Loops[];
-}
-
-const LoopGrid: React.FC<LoopGridProps> = ({ loops }) => {
+const LoopGrid: React.FC<{ loops: Loop[] }> = ({ loops }) => {
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
   const [isLoopFormOpen, setIsLoopFormOpen] = useState(false);
   const [isCheckinFormOpen, setIsCheckinFormOpen] = useState(false);
@@ -53,7 +41,6 @@ const LoopGrid: React.FC<LoopGridProps> = ({ loops }) => {
     setIsCheckinFormOpen(false);
   };
 
-
   return (
     <Box>
       <Stack direction={['column', 'row']} spacing='24px' justify='space-between' mb={4} py={4} px={6}>
@@ -69,15 +56,11 @@ const LoopGrid: React.FC<LoopGridProps> = ({ loops }) => {
           Create
         </Button>
       </Stack>
-      <SimpleGrid minChildWidth='300px' spacing={4}>        {loops.map((loop, index) => (
+      <SimpleGrid minChildWidth='300px' spacing={4}>
+        {' '}
+        {loops.map((loop, index) => (
           <GridItem key={index}>
-            <LoopCard
-              name={loop.name}
-              description={loop.description}
-              createdBy={loop.createdBy}
-              remainingTime={loop.remainingTime}
-              iterations={loop.iterations}
-            />
+            <LoopCard loop={loop} />
           </GridItem>
         ))}
       </SimpleGrid>
@@ -90,6 +73,7 @@ const LoopGrid: React.FC<LoopGridProps> = ({ loops }) => {
     </Box>
   );
 };
+
 
 const getRemainingTime = () => {
   const now = new Date();

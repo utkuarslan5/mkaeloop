@@ -18,49 +18,31 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import IterationPopover from './IterationPopover';
+import { type Loop, type User } from 'wasp/entities';
 
 interface LoopDetailsCardProps {
-  name: string;
-  createdBy: string;
-  description: string;
-  remainingTime: number;
-  iterations: boolean[];
+  loop: Loop;
   isOpen: boolean;
   onClose: () => void;
+  username?: string;
 }
 
-const LoopDetailsCard: React.FC<LoopDetailsCardProps> = ({
-  name,
-  createdBy,
-  description,
-  remainingTime,
-  iterations,
-  isOpen,
-  onClose,
-}) => {
+const LoopDetailsCard: React.FC<LoopDetailsCardProps> = ({ loop, isOpen, onClose, username }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size={['xs', 'sm', 'md', 'lg', 'xl']}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
           <HStack>
-            <Heading>{name}</Heading>
+            <Heading>{loop.name}</Heading>
             <Spacer />
-            <Avatar name={createdBy} size='md' />
+            <Avatar name={username || 'John Doe'} size='md' />
           </HStack>
         </ModalHeader>
         <ModalBody>
           <VStack align='stretch' spacing={6}>
-            <Text>{description}</Text>
-            {/* <Box>
-              <Text>Remaining time:</Text>
-              <Progress value={remainingTime} size='md' colorScheme='blackAlpha' />
-            </Box> */}
-            <Box display='flex' mt={2}> 
-              {iterations.map((iteration, index) => (
-                <IterationPopover key={index} iteration={iteration} />
-              ))}
-            </Box>
+            <Text>{loop.description}</Text>
+            <Text>Username: {username}</Text>
           </VStack>
         </ModalBody>
         <ModalFooter>{/*add footer button here*/}</ModalFooter>
