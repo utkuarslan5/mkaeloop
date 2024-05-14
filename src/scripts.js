@@ -5,33 +5,10 @@ export function createRandomUser() {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
   const user = {
-    email: faker.internet.email({
-      firstName,
-      lastName,
-    }),
     username: faker.internet.userName({
       firstName,
       lastName,
     }),
-    createdAt: faker.date.between({
-      from: new Date("2023-01-01"),
-      to: new Date(),
-    }),
-    lastActiveTimestamp: faker.date.recent(),
-    isAdmin: false,
-    stripeId: `cus_${faker.string.uuid()}`,
-    sendEmail: false,
-    subscriptionStatus: faker.helpers.arrayElement([
-      "active",
-      "canceled",
-      "past_due",
-      "deleted",
-      null,
-    ]),
-    datePaid: faker.date.recent(),
-    credits: faker.number.int({ min: 0, max: 3 }),
-    checkoutSessionId: null,
-    subscriptionTier: faker.helpers.arrayElement(["hobby", "pro"]),
   };
   return user;
 }
@@ -39,13 +16,11 @@ export function createRandomUser() {
 export function createRandomLoop() {
   const name = faker.lorem.words(3);
   const description = faker.lorem.words(10);
-  const accountabilityPartner = faker.internet.userName();
   const isActive = faker.datatype.boolean();
 
   const loop = {
     name,
     description,
-    accountabilityPartner,
     isActive,
   };
 

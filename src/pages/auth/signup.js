@@ -7,10 +7,4 @@ export const userSignupFields = defineUserSignupFields({
     }
     return data.username;
   },
-  profileImage: (data) => {
-    if (!data.profileImage) {
-      return "/default.jpg";
-    }
-    return data.profileImage;
-  },
 });

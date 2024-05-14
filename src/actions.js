@@ -1,6 +1,6 @@
 import { HttpError } from "wasp/server";
 export const createLoop = async (
-  { name, description, accountabilityPartner },
+  { name, description },
   context
 ) => {
   if (!context.user) {
@@ -14,7 +14,6 @@ export const createLoop = async (
       data: {
         name,
         description,
-        accountabilityPartner,
         user: { connect: { id: context.user.id } },
         iterations: {
           create: {

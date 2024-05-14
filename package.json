@@ -1,7 +1,12 @@
 {
   "name": "MkaeLoop",
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.2",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@headlessui/react": "^1.7.19",
+    "framer-motion": "^6.5.1",
     "js-confetti": "^0.12.0",
     "prop-types": "15.7.2",
     "react": "^18.2.0",
@@ -9,7 +14,9 @@
     "wasp": "file:.wasp/out/sdk/wasp"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "@types/react": "^18.0.37",
+    "faker": "^5.5.3",
     "prisma": "4.16.2",
     "typescript": "^5.1.0",
     "vite": "^4.3.9"
