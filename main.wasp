@@ -13,7 +13,11 @@ app MakeLoop {
     system: PostgreSQL,
     prisma: {
       clientPreviewFeatures: ["extendedWhereUnique"]
-    }
+    },
+    seeds: [
+      import { resetAll } from "@src/scripts.js",
+      import { devSeedUsers } from "@src/scripts.js",
+    ]
   },
   auth: {
     userEntity: User,
@@ -53,132 +57,59 @@ page NotFoundPage {
 
 // Entities
 entity User {=psl
-  id                  Int      @id @default(autoincrement())
-  username            String   @unique
-  profileImage        String?
-  bio                 String?
-  checkins            Checkin[]
-  createdLoops        Loop[]   @relation("UserLoops")
-  watchedLoops        Loop[]   @relation("LoopWatchers")
-  participatedLoops   Loop[]   @relation("LoopParticipants")
-
+  id        Int     @id @default(autoincrement())
+  username  String  @unique
+  loops     Loop[]  @relation("UserLoops")
 psl=}
 
 entity Loop {=psl
-  id            Int        @id @default(autoincrement())
-  name          String
-  projectType   String
-  numIterations Int
-  frequency     String     // e.g., "daily", "weekly", "monthly"
-  isActive      Boolean    @default(true)
-  createdById   Int
-  createdBy     User       @relation("UserLoops", fields: [createdById], references: [id])
-  watchers      User[]     @relation("LoopWatchers")
-  participants  User[]     @relation("LoopParticipants")
-  iterations    Iteration[]
+  id                        Int        @id @default(autoincrement())
+  name                      String
+  description               String?
+  accountabilityPartner     String
+  isActive                  Boolean    @default(true)
+  userId                    Int
+  user                      User       @relation("UserLoops", fields: [userId], references: [id])
+  iterations                Iteration[]
 psl=}
 
 entity Iteration {=psl
-  id          Int      @id @default(autoincrement())
-  loopId      Int
-  loop        Loop     @relation(fields: [loopId], references: [id])
-  startTime   DateTime
-  endTime     DateTime
-  checkins    Checkin[]
-  completed   Boolean  @default(false)
-psl=}
-
-entity Checkin {=psl
-  id          Int       @id @default(autoincrement())
-  iterationId Int
-  iteration   Iteration @relation(fields: [iterationId], references: [id])
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  createdAt   DateTime  @default(now())
-  proofOfWork String
+  id         Int      @id @default(autoincrement())
+  loopId     Int
+  loop       Loop     @relation(fields: [loopId], references: [id])
+  startTime  DateTime
+  endTime    DateTime
+  checkin    String
+  isComplete Boolean  @default(false)
 psl=}
 
 // Actions
 action createLoop {
-  fn: import { createLoop } from "@src/actions.js",
-  entities: [Loop]
-}
-action deleteLoop {
-  fn: import { deleteLoop } from "@src/actions.js",
-  entities: [Loop, Iteration, Checkin]
-}
-action deactivateLoop {
-  fn: import { deactivateLoop } from "@src/actions.js",
-  entities: [Loop]
-}
-action joinLoop {
-  fn: import { joinLoop } from "@src/actions.js",
-  entities: [Loop]
+  fn: import { createLoop } from "@src/server/actions.js",
+  entities: [User, Loop]
 }
 
-action watchLoop {
-  fn: import { watchLoop } from "@src/actions.js",
-  entities: [Loop]  
-}
-
-action leaveLoop {
-  fn: import { leaveLoop } from "@src/actions.js", 
-  entities: [Loop]
-}
-
-action unwatchLoop {
-  fn: import { unwatchLoop } from "@src/actions.js",
-  entities: [Loop]
-}
-action createIteration {
-  fn: import { createIteration } from "@src/actions.js",
-  entities: [Iteration, Loop]
-}
-action createCheckin {
-  fn: import { createCheckin } from "@src/actions.js",
-  entities: [Checkin, Iteration]
-}
-action createIterations {
-  fn: import { createIterations } from "@src/actions.js",
-  entities: [Iteration, Loop]
+action addCheckin {
+  fn: import { addCheckin } from "@src/server/actions.js",
+  entities: [User, Loop]
 }
 
 // Queries
-query getUser {
-  fn: import { getUser } from "@src/queries.js",
-  entities: [User]
+query getLoops {
+  fn: import { getLoops } from "@src/server/queries.js",
+  entities: [Loop]
 }
-query getUserByUsername {
-  fn: import { getUserByUsername } from "@src/queries.js",
+
+query getActiveLoops {
+  fn: import { getActiveLoops } from "@src/server/queries.js",
+  entities: [Loop, User]
+}
+query getUsernameFromLoopID {
+  fn: import { getUsernameFromLoopID } from "@src/server/queries.js",
   entities: [User]
 }
 
-query getLoops {
-  fn: import { getLoops } from "@src/queries.js",
-  entities: [Loop]
-}
-query getActiveLoops {
-  fn: import { getActiveLoops } from "@src/queries.js",
-  entities: [Loop]
-}
-query getLoopParticipants {
-  fn: import { getLoopParticipants } from "@src/queries.js",
-  entities: [User, Loop]
-}
-query getLoopWatchers {
-  fn: import { getLoopWatchers } from "@src/queries.js",
-  entities: [User, Loop]
-}
-query getLoopById {
-  fn: import { getLoopById } from "@src/queries.js",
-  entities: [Loop]
-}
-query getIterationsByLoopId {
-  fn: import { getIterationsByLoopId } from "@src/queries.js",
+query getIterations {
+  fn: import { getIterations } from "@src/server/queries.js",
   entities: [Iteration]
 }
-query getCheckinsByIterationId {
-  fn: import { getCheckinsByIterationId } from "@src/queries.js",
-  entities: [Checkin, User]
-}
-
