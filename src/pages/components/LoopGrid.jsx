@@ -9,19 +9,27 @@ import {
   StatLabel,
   StatNumber,
   StatHelpText,
+  Tooltip,
+  useToast,
+  Wrap,
+  WrapItem,
+  HStack,
+  VStack,
 } from "@chakra-ui/react";
-import { AddIcon, CheckIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { AddIcon, CheckIcon } from "@chakra-ui/icons";
 import React, { useEffect, useState, useRef } from "react";
 import LoopCard from "./LoopCard";
 import LoopForm from "./LoopForm";
 import CheckinForm from "./CheckinForm";
+import { useAuth } from "wasp/client/auth";
 
 const LoopGrid = ({ loops }) => {
   const [remainingTime, setRemainingTime] = useState(getRemainingTime());
   const [isLoopFormOpen, setIsLoopFormOpen] = useState(false);
   const [isCheckinFormOpen, setIsCheckinFormOpen] = useState(false);
   const oneMinute = 60000;
-  const checkinFormRef = useRef(null);
+  const { data: user } = useAuth();
+  const toast = useToast();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,7 +43,16 @@ const LoopGrid = ({ loops }) => {
   const weekRange = getWeekRange();
 
   const handleCreateClick = () => {
-    setIsLoopFormOpen(true);
+    if (!user) {
+      toast({
+        description: "You must be logged in to create a new loop",
+        status: "warning",
+        isClosable: true,
+        duration: 2500,
+      });
+    } else {
+      setIsLoopFormOpen(true);
+    }
   };
 
   const handleLoopFormClose = () => {
@@ -43,7 +60,16 @@ const LoopGrid = ({ loops }) => {
   };
 
   const handleCheckinClick = () => {
-    setIsCheckinFormOpen(true);
+    if (!user) {
+      toast({
+        description: "You must be logged in to check-in",
+        status: "warning",
+        isClosable: true,
+        duration: 2500,
+      });
+    } else {
+      setIsCheckinFormOpen(true);
+    }
   };
 
   const handleCheckinFormClose = () => {
@@ -53,32 +79,43 @@ const LoopGrid = ({ loops }) => {
   return (
     <Box>
       <Stack
-        direction={["column", "row"]}
-        spacing="24px"
+        direction={["row"]}
+        // spacing="24px"
         justify="space-between"
         mb={4}
         py={4}
         px={6}
       >
         <Stat>
-          <StatLabel>Remaining time</StatLabel>
-          <StatNumber>{formattedTime}</StatNumber>
+          <StatNumber fontSize={["2xl", "3xl"]}>{formattedTime}</StatNumber>
           <StatHelpText>{weekRange}</StatHelpText>
         </Stat>
-        <Button
-          leftIcon={<CheckIcon />}
-          variant="solid"
-          onClick={handleCheckinClick}
-        >
-          Check-in
-        </Button>
-        <Button
-          leftIcon={<AddIcon />}
-          variant="outline"
-          onClick={handleCreateClick}
-        >
-          Create
-        </Button>
+        <Stack direction={["column", "row"]} spacing={[2, 4]} justify="baseline">
+          <Tooltip label="Show what you did this week">
+            <Button
+              leftIcon={<CheckIcon />}
+              variant="solid"
+              onClick={handleCheckinClick}
+              size={["sm", "md"]}
+              width="100%"
+            >
+              Check-in
+            </Button>
+          </Tooltip>
+          <Tooltip label="Start a new project cycle">
+            <Button
+              leftIcon={<AddIcon />}
+              variant="outline"
+              onClick={handleCreateClick}
+              size={["sm", "md"]}
+              width="100%"
+            >
+              Create
+            </Button>
+          </Tooltip>
+        </Stack>
+
+
       </Stack>
       <SimpleGrid minChildWidth="300px" spacing={4}>
         {" "}
@@ -117,7 +154,7 @@ const formatTime = (remainingtime) => {
   const minutes = Math.floor((remainingtime % (1000 * 60 * 60)) / (1000 * 60));
   const seconds = Math.floor((remainingtime % (1000 * 60)) / 1000);
 
-  return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  return `${days}d ${hours}h ${minutes}m`;
 };
 
 const getWeekRange = () => {

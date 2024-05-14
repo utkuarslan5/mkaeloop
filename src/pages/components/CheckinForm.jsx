@@ -24,6 +24,7 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from "@chakra-ui/react";
 import { useAuth } from "wasp/client/auth";
 import { addCheckin } from "wasp/client/operations";
@@ -32,6 +33,7 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
   const [selectedLoop, setSelectedLoop] = useState(null);
   const [weeklyWork, setWeeklyWork] = useState("");
   const { data: user } = useAuth();
+  const toast = useToast();
 
   const userLoops = loops.filter((loop) => {
     return loop.userId === user?.id;
@@ -41,7 +43,6 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
     const selectedLoopName = e.target.value;
     const loop = userLoops.find((loop) => loop.name === selectedLoopName);
     setSelectedLoop(loop || null);
-    console.log("Selected loop:", loop);
   };
 
   const steps = [
@@ -62,32 +63,27 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
               </option>
             ))}
           </Select>
+
+          <Box mt={4}>
+            <FormLabel>What did you work on this week?</FormLabel>
+            <Textarea
+              value={weeklyWork}
+              onChange={(e) => setWeeklyWork(e.target.value)}
+            />
+          </Box>
         </FormControl>
       ),
     },
-    {
-      title: "Weekly Work",
-      description: "",
-      form: (
-        <FormControl>
-          <FormLabel>What did you work on this week?</FormLabel>
-          <Textarea
-            value={weeklyWork}
-            onChange={(e) => setWeeklyWork(e.target.value)}
-          />
-        </FormControl>
-      ),
-    },
-    {
-      title: "Confirm Check-in",
-      description: "",
-      form: (
-        <Box>
-          <FormLabel>{selectedLoop?.name}</FormLabel>
-          <Text>{weeklyWork}</Text>
-        </Box>
-      ),
-    },
+    // {
+    //   title: "Confirm Check-in",
+    //   description: "",
+    //   form: (
+    //     <Box>
+    //       <FormLabel>{selectedLoop?.name}</FormLabel>
+    //       <Text>{weeklyWork}</Text>
+    //     </Box>
+    //   ),
+    // },
   ];
 
   const { activeStep, setActiveStep } = useSteps({
@@ -100,11 +96,29 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
       addCheckin({
         loopId: selectedLoop.id,
         checkin: weeklyWork,
-      });
+      })
+        .then(() => {
+          toast({
+            description: "Check-in submitted successfully",
+            status: "success",
+            duration: 5000,
+            isClosable: true,
+          });
+          setSelectedLoop(null);
+          setWeeklyWork("");
+          setActiveStep(0);
+          onClose();
+        })
+        .catch((error) => {
+          console.error("Error submitting check-in:", error);
+          toast({
+            description: "An error occurred while submitting the check-in",
+            status: "error",
+            duration: 5000,
+            isClosable: true,
+          });
+        });
     }
-    setSelectedLoop(null);
-    setWeeklyWork("");
-    setActiveStep(0);
   };
 
   const activeStepText = steps[activeStep].description;
@@ -121,10 +135,10 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Check-in Form</ModalHeader>
+        {/* <ModalHeader>Check-in</ModalHeader> */}
         <ModalCloseButton />
         <ModalBody>
-          <Box position="relative">
+          {/* <Box position="relative">
             <Stepper size="sm" index={activeStep} gap="0">
               {steps.map((step, index) => (
                 <Step key={index}>
@@ -142,7 +156,7 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
               top="10px"
               zIndex={-1}
             />
-          </Box>
+          </Box> */}
 
           <Box mt={6}>{activeStepText}</Box>
           <Box mt={6}>{activeStepForm}</Box>
@@ -150,7 +164,7 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
 
         <ModalFooter>
           <Flex justify="flex-end" gap={4}>
-            <Button
+            {/* <Button
               onClick={() => setActiveStep(activeStep - 1)}
               isDisabled={activeStep === 0}
             >
@@ -163,17 +177,8 @@ const CheckinForm = ({ isOpen, onClose, loops }) => {
               >
                 Next
               </Button>
-            )}
-            {activeStep === max && (
-              <Button
-                onClick={() => {
-                  submitForm();
-                  onClose();
-                }}
-              >
-                Submit
-              </Button>
-            )}
+            )} */}
+            {activeStep === max && <Button onClick={submitForm}>Submit</Button>}
           </Flex>
         </ModalFooter>
       </ModalContent>

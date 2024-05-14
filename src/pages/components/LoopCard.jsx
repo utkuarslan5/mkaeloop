@@ -33,12 +33,12 @@ const LoopCard = ({ loop }) => {
             <Box>
               <Heading noOfLines={1}>{loop.name}</Heading>
             </Box>
-            <Avatar name={username || undefined} />
+            <Avatar name={username || undefined}  />
           </Flex>
         </CardHeader>
         <CardBody>
           <Box pb={4}>
-            <Text noOfLines={3}>{loop.description} </Text>
+            <Text noOfLines={2}>{loop.description} </Text>
           </Box>
           {/*
           <Box width='80%'>

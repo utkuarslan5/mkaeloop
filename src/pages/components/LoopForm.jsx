@@ -24,42 +24,34 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from "@chakra-ui/react";
 import { createLoop } from "wasp/client/operations";
 
 const LoopForm = ({ isOpen, onClose }) => {
   const [userEntries, setUserEntries] = useState(["", ""]);
-
+  const toast = useToast();
   const steps = [
     {
       title: "First",
       description: "",
       form: (
         <FormControl>
-          <FormLabel>What will you make</FormLabel>
+          <FormLabel>Name of your project</FormLabel>
           <Input
             type="text"
             value={userEntries[0]}
             onChange={(e) => setUserEntries([e.target.value, userEntries[1]])}
           />
-          <FormLabel>What will it do/look-like in the end?</FormLabel>
-          <Textarea
-            value={userEntries[1]}
-            onChange={(e) => setUserEntries([userEntries[0], e.target.value])}
-          />
-        </FormControl>
-      ),
-    },
-    {
-      title: "Confirm",
-      description: "",
-      form: (
-        <Box>
-          <Heading size="md">{userEntries[0]}</Heading>
-          <Box mt={2}>
-            <Text>What will it do/look-like in the end: {userEntries[1]}</Text>
+          <Box mt={4}>
+            <FormLabel>What does it solve? Describe it</FormLabel>
+            <Textarea
+              value={userEntries[1]}
+              onChange={(e) => setUserEntries([userEntries[0], e.target.value])}
+            />
           </Box>
-        </Box>
+        </FormControl>
+
       ),
     },
   ];
@@ -84,8 +76,20 @@ const LoopForm = ({ isOpen, onClose }) => {
       setActiveStep(0);
       setUserEntries(["", ""]);
       onClose();
+      toast({
+        description: "Loop created successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error("Error creating loop:", error);
+      toast({
+        description: "An error occurred while creating the loop",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     }
   };
 
@@ -98,10 +102,10 @@ const LoopForm = ({ isOpen, onClose }) => {
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Loop Form</ModalHeader>
+        {/* <ModalHeader>Loop Form</ModalHeader> */}
         <ModalCloseButton />
         <ModalBody>
-          <Box position="relative">
+          {/* <Box position="relative">
             <Stepper size="sm" index={activeStep} gap="0">
               {steps.map((step, index) => (
                 <Step key={index}>
@@ -119,7 +123,7 @@ const LoopForm = ({ isOpen, onClose }) => {
               top="10px"
               zIndex={-1}
             />
-          </Box>
+          </Box> */}
 
           <Box mt={6}>{activeStepText}</Box>
           <Box mt={6}>{activeStepForm}</Box>
@@ -127,7 +131,7 @@ const LoopForm = ({ isOpen, onClose }) => {
 
         <ModalFooter>
           <Flex justify="flex-end" gap={4}>
-            <Button
+            {/* <Button
               onClick={() => setActiveStep(activeStep - 1)}
               isDisabled={activeStep === 0}
             >
@@ -140,9 +144,9 @@ const LoopForm = ({ isOpen, onClose }) => {
               >
                 Next
               </Button>
-            )}
+            )} */}
             {activeStep === max && (
-              <Button onClick={handleConfirm}>Confirm</Button>
+              <Button onClick={handleConfirm}>Submit</Button>
             )}
           </Flex>
         </ModalFooter>

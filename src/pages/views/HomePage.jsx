@@ -5,7 +5,6 @@ import { useQuery, getActiveLoops } from "wasp/client/operations";
 
 const HomePage = () => {
   const { data: loops, isLoading, error } = useQuery(getActiveLoops);
-  console.log(loops);
 
   return (
     <Box>

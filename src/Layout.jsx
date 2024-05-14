@@ -1,9 +1,24 @@
 import { Link } from "wasp/client/router";
 import { useAuth, logout } from "wasp/client/auth";
 import { getUsername } from "wasp/auth";
-import { Helmet } from "react-helmet";
 import { useState, useRef, useEffect } from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  Box,
+  Flex,
+  Heading,
+  IconButton,
+  Button,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuGroup,
+  MenuItem,
+  Image,
+  Text
+} from "@chakra-ui/react";
+import { HamburgerIcon, ArrowForwardIcon} from '@chakra-ui/icons'
+
 
 import "./Main.css";
 
@@ -39,74 +54,106 @@ export const Layout = ({ children }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.innerHTML = `
+      window.$sleek=[];
+      window.SLEEK_PRODUCT_ID=291162644;
+      (function(){
+        d=document;
+        s=d.createElement("script");
+        s.src="https://client.sleekplan.com/sdk/e.js";
+        s.async=1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+      })();
+    `;
+    document.head.appendChild(script);
+  }, []);
+
   return (
     <ChakraProvider>
-      <div className="flex flex-col min-h-screen">
-        <header className="bg-primary-500 text-white p-4">
-          <div className="container mx-auto px-4 py-2 flex justify-between w-2/3 mx-auto">
-            <Link to="/">
-              <img
-                src="/logo.png"
-                alt="MkaeLoop Logo"
-                className="w-14 h-14 rounded-full"
-              />
-            </Link>
-            <div className="flex items-center">
-              {user && (
-                <div className="relative" ref={menuRef}>
-                  <div
-                    className="flex items-center cursor-pointer"
-                    onClick={toggleMenu}
+      <Box bg="#FFBC4A" p={4}>
+        <Flex justify="space-between">
+          <Link to="/">
+            <Image
+              src="/logo.png"
+              alt="MkaeLoop Logo"
+              width={12}
+              height={12}
+              rounded="full"
+            />
+          </Link>
+          <Flex align="center">
+            {user && (
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  aria-label="User Options"
+                  icon={<HamburgerIcon />}
+                  size="lg"
+                  colorScheme="black"
+                />
+                <MenuList>
+                  <MenuGroup title={`Hi, ${getUsername(user)}`}>
+                    <MenuItem
+                      icon={<ArrowForwardIcon />}
+                      onClick={() => {
+                        logout();
+                      }}
+                    >
+                      Log out
+                    </MenuItem>
+                  </MenuGroup>
+                </MenuList>
+              </Menu>
+            )}
+
+            {!user && (
+              <Flex>
+                <Link to="/login">
+                  <Button
+                    mr={4}
+                    colorScheme="undefined"
+                    _hover={{ bg: "gray.200" }}
                   >
-                    <span className="ml-2">Hi, {getUsername(user)}!</span>
-                  </div>
-                  {isMenuOpen && (
-                    <div className="absolute right-0 mt-2 bg-white rounded-md shadow-lg">
-                      <Link to={`/${getUsername(user)}`}>
-                        <button
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
-                          onClick={handleMenuItemClick}
-                        >
-                          Profile
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout();
-                          handleMenuItemClick();
-                        }}
-                        className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
-                      >
-                        Log out
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-              {!user && (
-                <div className="flex">
-                  <Link to="/login">
-                    <h1 className="text-xl2 underline mr-4">Log in</h1>
-                  </Link>
-                  <Link to="/signup">
-                    <h1 className="text-xl2 underline">Sign up</h1>
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
-        <main className="container mx-auto px-4 py-2 flex-grow">
-          {children}
-        </main>
-        <footer>
-          <div className="container mx-auto p-4">
-            <p className="text-center text-gray-500 text-sm">
-              MkaeLoop 🐙 ~ Powered by 🐝 ~ Made with ❤️
-            </p>
-          </div>
-        </footer>
-      </div>
+                    Log in
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button
+                    mr={4}
+                    variant="outline"
+                    colorScheme="white"
+                    color="white"
+                    _hover={{ bg: "gray.200" }}
+                  >
+                    Sign up
+                  </Button>
+                </Link>
+              </Flex>
+            )}
+          </Flex>
+        </Flex>
+      </Box>
+      <Box flexGrow={1} maxWidth="container.lg" mx="auto">
+        {children}
+      </Box>
+      <Box position="fixed" bottom={0} left={0} right={0}>
+        <Box maxWidth="container.lg" mx="auto" p={4}>
+          <Box textAlign="center" color="gray.500" fontSize="sm">
+            <Text>
+              MkaeLoop 2024 🐙
+              <br />
+              Powered by 🐝 ~ Made with ❤️
+            </Text>
+            ️
+          </Box>
+        </Box>
+      </Box>
     </ChakraProvider>
   );
 };
+
+export default Layout

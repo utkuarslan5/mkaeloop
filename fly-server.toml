@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for mkaeloop-server on 2024-05-07T13:58:45+02:00
+# fly.toml app configuration file generated for mkaeloop-server on 2024-05-14T13:48:24+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -17,6 +17,6 @@ primary_region = 'ams'
   processes = ['app']
 
 [[vm]]
-  memory = '256mb'
+  memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1

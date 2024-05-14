@@ -38,6 +38,7 @@ const LoopDetailsCard = ({ loop, isOpen, onClose, username }) => {
           <VStack align='stretch' spacing={6}>
             <Text>{loop.description}</Text>
             <HStack>
+              <Text as='b'>Iterations:</Text>
               {iterations?.map((iteration, index) => <IterationPopover key={iteration.id} {...iteration} />)}
             </HStack>
           </VStack>

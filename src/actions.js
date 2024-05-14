@@ -7,8 +7,6 @@ export const createLoop = async (
     throw new HttpError(401);
   }
 
-  console.log("Creating a new loop...");
-
   try {
     const loop = await context.entities.Loop.create({
       data: {
@@ -24,10 +22,8 @@ export const createLoop = async (
         },
       },
     });
-    console.log("Created a new loop", loop);
     return loop;
   } catch (error) {
-    console.error("Error creating loop:", error);
     throw new HttpError(500, "Error creating loop");
   }
 };
@@ -76,10 +72,8 @@ export const addCheckin = async ({ loopId, checkin }, context) => {
       include: { iterations: true },
     });
 
-    console.log("updatedLoop:", updatedLoop);
     return updatedLoop;
   } catch (error) {
-    console.error("Error adding checkin:", error);
     throw new HttpError(500, "Error adding checkin");
   }
 };
